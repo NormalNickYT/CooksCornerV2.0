@@ -1,31 +1,27 @@
-import React, {useEffect, useState} from 'react'
+import { useState } from 'react'
+import { Button } from "@/components/ui/button"
+import './App.css'
 
-interface UserData {
-  users: string[]; 
-}
+function App() {
+  const [count, setCount] = useState(0)
 
-export function App() {
-const [backendData, setBackendData] = useState<UserData>({ users: [] });
-
-useEffect(() => {
-  fetch("/api")
-    .then(response => response.json())
-    .then((data: UserData) => {
-      setBackendData(data);
-    });
-}, []);
-
-return (
-  <div>
-    {backendData.users.length === 0 ? (
-      <p> Loading... </p>
-    ) : (
-      backendData.users.map((user, i) => (
-        <p key={i}> {user} </p>
-      ))
-    )}
-  </div>
-);
+  return (
+    <>
+      <h1>Vite + React</h1>
+      <div className="card">
+        <button onClick={() => setCount((count) => count + 1)}>
+          count is {count}
+        </button>
+        <p>
+          Edit <code>src/App.tsx</code> and save to test HMR
+        </p>
+        <Button> Click Me </Button>
+      </div>
+      <p className="read-the-docs">
+        Click on the Vite and React logos to learn more
+      </p>
+    </>
+  )
 }
 
 export default App
