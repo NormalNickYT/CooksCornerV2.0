@@ -5,12 +5,10 @@ const prisma = new PrismaClient();
 
 const port = 5000
 
-app.get('/api/users', async (req, res) => {
-  const users = await prisma.user.findMany();
-  res.json(users);
-});
+var postRoute = require('./routes/post');
+
+app.use('/post', postRoute)
 
 app.listen(port, () => {
   console.log(`Server Started On: ${port}`)
 })
-

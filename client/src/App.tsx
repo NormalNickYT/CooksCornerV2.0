@@ -1,20 +1,16 @@
 // import { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+// import { Button } from "@/components/ui/button"
+// import { Input } from "@/components/ui/input"
 
-import './App.css'
+import Hero from "./components/Hero"
+import Navbar from "./components/Navbar"
 
 function App() {
   return (
-    <>
-      <h1> </h1>
-      <div className="card">
-        <Input type = "email" placeholder = "Email" />
-        <Button> Click Me </Button>
-      </div>
-      <p>  
-      </p>
-    </>
+    <div> 
+      <Navbar />
+      <Hero />
+    </div>
   )
 }
 
