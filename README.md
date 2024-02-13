@@ -7,7 +7,7 @@ Well, that's what this website is for! Here, you can easily add and refer to you
 
 - ⚙️ [React]("https://react.dev/): The library for web and native user interfaces
 - 😎 [TypeScript]("https://www.typescriptlang.org/") JavaScript with syntax for types.
-- 💦 [Prisma]("https://www.prisma.io/"): ORM for interface with database
+- 💦 [Prisma]("https://www.prisma.io/"): ORM for interfacing with database
 - 💽 [PlanetScale]("https://planetscale.com/"): Cloud hosted MySQL database
 - 🚀 [Vercel]("https://vercel.com/home"): Serverless hosting
 - 🎨 [ShadCN for Svelte]("https://www.shadcn-svelte.com/"): UI components
