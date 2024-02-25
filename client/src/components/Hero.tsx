@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button"
 import logo from '../assets/img/food.png';
+import { Link } from "react-router-dom";
 
 export const Hero = () => {
     return ( 
-    <section className="mt-10 mx-auto max-w-full pb-4 px-4 items-center lg:flex md:px-20">
+    <section className="mt-10 mx-auto max-w-full pb-4 px-4 items-center lg:flex md:px-20 ">
         <div className="space-y-4 flex-1 sm:text-center lg:text-left">
-            <h1 className="text-gray-800 font-bold text-4xl xl:text-5xl">
+            <h1 className="text-gray-800 font-bold text-4xl xl:text-5xl dark:text-white">
                  The Best Place For 
                  <span className="text-[#00df9a]"> WorldWide Recipes </span>
             </h1>
@@ -17,7 +18,7 @@ export const Hero = () => {
             </p>
             <div>
                 <Button> 
-                    Login
+                    <Link to={"/Login"}> Login </Link>
                 </Button>
             </div>
         </div>

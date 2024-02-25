@@ -1,43 +1,53 @@
 import { useState } from 'react'
 import { AiOutlineMenu, AiOutlineSearch, AiOutlineClose } from 'react-icons/ai';
 import logo from '../assets/img/CooksCornerLogo.png'
+import { NavLink } from 'react-router-dom';
+import Switcher from './ui/switcher';
+
 
 const Navbar = () => {
     const [nav, setNav] = useState(false);
-  
     const handleNav = () => {
       setNav(!nav);
     };
   
     const navItems = [
       { id: 1, text: 'Home' },
-      { id: 2, text: 'Categorie' },
+      { id: 2, text: 'Categories' },
       { id: 3, text: 'Login' },
     ];
-  
+
     return (
-      <div className='flex justify-between items-center h-24 max-w-[1940px] mx-auto px-4 text-white'>
+      <div className='flex justify-between items-center h-24 max-w-[1940px] mx-auto px-20 text-white dark:bg-gray-900'>
         <h1 className='w-full text-3xl font-bold text-[#00df9a]'>CooksCorner</h1>
-        {/* <img src = {logo} /> */}
-      <div className='flex items-center justify-center w-full md:w-[500px] lg:w-[500px] mb-4 md:mb-0'>
-        <div className='bg-gray-200 rounded-full flex items-center px-2 w-full md:w-[400px] lg:w-[300px] mb-4 md:mb-0'>
+      <div className='flex items-center space-x-4 flex-grow'>
+        <div className='bg-gray-200 rounded-full flex items-center px-2 w-full'>
           <input
-            className='bg-transparent p-2 w-full focus:outline-none'
+            className='bg-transparent p-2 w-full focus:outline-none text-black'
             type='text'
             placeholder='Zoek voor een specifiek recept'
           />
           <AiOutlineSearch size={30} color='black' />
         </div>
       </div>
-        <ul className='hidden md:flex'>
+        <ul className='flex items-center'>
           {navItems.map(item => (
             <li
               key={item.id}
-              className='p-4 hover:bg-[#00df9a] rounded-xl m-2 cursor-pointer duration-300 text-black hover:text-black'
+              className= {`p-4 m-2 text-black dark:text-white underline-wavy-hotpink`}
             >
-              {item.text}
+               {item.text === 'Home' ? (
+                  <NavLink to="/" className={({ isActive }) =>
+                  isActive ? 'text-lg text-[#00DF9A] font-bold' : ''
+                }>Home</NavLink>
+                ) : (
+                  <NavLink to={"/" + item.text} className={({ isActive }) =>
+                  isActive ? 'text-lg text-[#00DF9A] font-bold' : ''
+                } >{item.text}</NavLink>
+                )}
             </li>
           ))}
+          <Switcher />
         </ul>
         <div onClick={handleNav} className='block md:hidden'>
           {nav ? <AiOutlineClose color = 'black' size={20} /> : <AiOutlineMenu color = 'black' size={20} />}

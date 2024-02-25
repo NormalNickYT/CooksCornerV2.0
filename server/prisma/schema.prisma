@@ -18,9 +18,19 @@ model User {
 model Post {
   id     Int      @id @default(autoincrement())
   title  String
-  userId Int
+  userId Int @unique
   user   User     @relation(fields: [userId], references: [id])
-
+  categoryId Int
+  category Category[] 
+  url String 
   @@index([userId])
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+  title String
+  postId Int @unique
+  post Post[] 
+  @@index([postId])
 }
 

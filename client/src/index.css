@@ -74,3 +74,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .underline-wavy-hotpink {
+    position: relative; 
+  }
+  .underline-wavy-hotpink::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px; 
+    width: 0;
+    height: 2px; 
+    background-color: hotpink;
+    transition: width 0.3s ease; 
+  }
+  .underline-wavy-hotpink:hover::after {
+    width: 100%;
+  }
+}

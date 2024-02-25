@@ -1,16 +1,18 @@
-// import { useState } from 'react'
-// import { Button } from "@/components/ui/button"
-// import { Input } from "@/components/ui/input"
-
 import Hero from "./components/Hero"
 import Navbar from "./components/Navbar"
+import {Route, Routes} from "react-router-dom"
+import Home from "./pages/Home"
+import Login from "./pages/Login"
 
 function App() {
   return (
-    <div> 
-      <Navbar />
-      <Hero />
-    </div>
+    <>
+    <Navbar />
+    <Routes> 
+      <Route path="/" element={<Home />} />
+      <Route path="/Login" element={<Login />} />
+    </Routes> 
+    </>
   )
 }
 
