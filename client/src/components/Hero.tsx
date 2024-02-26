@@ -17,7 +17,7 @@ export const Hero = () => {
             Are you tired of the same old recipes and looking for some fresh inspiration in the kitchen? Look no further than CooksCorner, where you can browse and share an endless variety of mouth-watering recipes from around the world.
             </p>
             <div>
-                <Button> 
+                <Button className = "bg-[#2B4555] text-white"> 
                     <Link to={"/Login"}> Login </Link>
                 </Button>
             </div>
