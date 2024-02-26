@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export const Hero = () => {
     return ( 
-    <section className="mt-10 mx-auto max-w-full pb-4 px-4 items-center lg:flex md:px-20 ">
+    <section className="mx-auto max-w-full pb-4 px-4 items-center lg:flex md:px-20 min-h-screen dark:bg-dark">
         <div className="space-y-4 flex-1 sm:text-center lg:text-left">
             <h1 className="text-gray-800 font-bold text-4xl xl:text-5xl dark:text-white">
                  The Best Place For 
@@ -22,11 +22,10 @@ export const Hero = () => {
                 </Button>
             </div>
         </div>
-        <div className="flex-1 text-center lg:mt-0 lg:ml-3">
+        <div className="flex-1 text-center lg:mt-0 lg:ml-2">
             <img src={logo}/>
         </div>
     </section>
       )
 }
-
 export default Hero

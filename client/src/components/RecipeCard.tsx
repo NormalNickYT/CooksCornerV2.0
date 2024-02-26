@@ -9,11 +9,12 @@ import {
 import { Button } from "./ui/button"
 import { Link } from "react-router-dom"
 import product from '../assets/img/food.png';
+import MenuTab from "./MenuTab";
 
 export const Recipes = () => {
     return (
      <div className="container mx-auto my-10">
-        <Card className="bg-[#1E262F] max-w-sm rounded-lg overflow-hidden shadow-md hover:shadow-lg transition duration-300">
+        <Card className="bg-[#1E262F] max-w-sm rounded-lg overflow-hidden transition duration-300 hover:scale-105">
             <CardHeader className="relative">
             <img
                 src= {product}
