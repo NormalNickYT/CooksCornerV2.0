@@ -11,6 +11,9 @@ import {
   } from "@/components/ui/card"
 
 export const LoginCard = () => {
+    const handleGoogleLogin = () => {
+        window.location.href = 'http://localhost:5000/auth/google';
+      };
     return (
         <div >
          <Card className="w-[400px]">
@@ -34,7 +37,7 @@ export const LoginCard = () => {
             </CardContent>
             <CardFooter className="flex justify-between">
                 <Button variant="outline">Cancel</Button>
-                <Button>Login</Button>
+                <Button onClick={handleGoogleLogin}>Login</Button>
             </CardFooter>
         </Card>      
         </div>
