@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -18,20 +19,23 @@ module.exports = {
     },
     extend: {
       colors: {
+        //'text': '#1d061e',
+        //background: "#e4e2e4",
+        //primary: "#ff999b",
+        //secondary: "#e27395",
+        //accent: "#c82f1e",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
         dark: "#020612",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
+        text: "#fce8fb",
+        background: "#1D1B1D",
+        primary: "#660002",
+        primary5: "hsl(359, 100%, 20%, 5%)",
+        secondary: "#8d1d3f",
+        secondary30: "hsl(342, 66%, 33%, 30%)",
+        accent: "#e14635",
+        foreground: "hsl(var(--foreground))",
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
@@ -39,10 +43,6 @@ module.exports = {
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -72,8 +72,14 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
-      fontFamily: {
-        sans: ["Wotfard", "Wotfard-fallback", "sans-serif"],
+      fontSize: {
+        sm: "0.750rem",
+        base: "1rem",
+        xl: "1.333rem",
+        "2xl": "1.777rem",
+        "3xl": "2.369rem",
+        "4xl": "3.158rem",
+        "5xl": "4.210rem",
       },
     },
   },

@@ -1,6 +1,7 @@
 datasource db {
-  provider     = "mysql"
+  provider     = "postgresql"
   url          = env("DATABASE_URL")
+  directUrl    = env("DIRECT_URL")
   relationMode = "prisma"
 }
 
@@ -12,7 +13,9 @@ model User {
   id       Int    @id @default(autoincrement())
   username String
   email    String @unique
-  password String
+  avatar   String
+  name     String
+  googleId String @unique
   posts    Post[]
 }
 
@@ -31,10 +34,7 @@ model Post {
 }
 
 model Category {
-  id     Int    @id @default(autoincrement())
-  title  String
-  postId Int    @unique
-  post   Post[]
-
-  @@index([postId])
+  id    Int    @id @default(autoincrement())
+  title String
+  post  Post[]
 }

@@ -1,11 +1,11 @@
 // middleware/passport-setup.ts
+import { PrismaClient } from '@prisma/client';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
-import {config} from 'dotenv';
-config();
+const prisma = new PrismaClient();
 
-const clientID = process.env.CLIENT_ID;
+const clientID = process.env.CLIENTID;
 const clientSecret = process.env.CLIENTSECRET;
 const callbackURL = process.env.CALLBACKURL;
 
@@ -17,8 +17,35 @@ passport.use(new GoogleStrategy({
     clientID,
     clientSecret,
     callbackURL,
-}, (accessToken, refreshToken, profile, done) => {
-    return done(null, profile);
+}, async (accessToken, refreshToken, profile, done) => {
+    try {
+        const alreadyUser = await prisma.user.findFirst({
+            where: {
+                googleId: profile.id
+            }
+        });
+        if (alreadyUser) {
+            return done(null, alreadyUser);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+
+    try {
+        const newUser = await prisma.user.create({
+            data: {
+                username: profile.displayName,
+                googleId: profile.id,
+                email: profile.emails?.[0].value || '',
+                name: profile.displayName,
+                avatar: profile.photos?.[0].value || '',
+            }
+        
+        });
+        return done(null, newUser);
+    } catch (error) {
+        console.log(error);
+    }
 }));
 
 // Serialize user into the session

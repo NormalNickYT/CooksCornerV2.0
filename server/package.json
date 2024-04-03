@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/server.js",
   "prisma": {
-    "seed": "node dist/prisma/seed.js"
+    "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
     "start": "nodemon server.ts",

@@ -3,14 +3,22 @@ import Navbar from "./components/Navbar"
 import {Route, Routes} from "react-router-dom"
 import Home from "./pages/Home"
 import Login from "./pages/Login"
+import { Layout } from "./layouts/layout"
 
 function App() {
   return (
     <>
-    <Navbar />
     <Routes> 
-      <Route path="/" element={<Home />} />
-      <Route path="/Login" element={<Login />} />
+      <Route path="/" element={ 
+      <Layout>
+        <Home />
+      </Layout>
+      } />
+      <Route path="/Login" element={
+         <Layout>
+         <Login />
+       </Layout>
+      } />
     </Routes> 
     </>
   )

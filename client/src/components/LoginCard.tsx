@@ -16,7 +16,7 @@ export const LoginCard = () => {
       };
     return (
         <div >
-         <Card className="w-[400px]">
+         <Card className="w-[400px] bg-background">
             <CardHeader>
                 <CardTitle>Login</CardTitle>
                 <CardDescription>Fill in your information</CardDescription>

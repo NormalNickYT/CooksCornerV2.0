@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -86,7 +86,7 @@
     bottom: -2px; 
     width: 0;
     height: 2px; 
-    background-color: hotpink;
+    @apply bg-accent; /* Gebruik de kleur van primary als achtergrondkleur */
     transition: width 0.3s ease; 
   }
   .underline-wavy-hotpink:hover::after {
@@ -132,8 +132,15 @@
     z-index: -1;
 }
 
-
+.shadow-button {
+  transition: transform ease 0.2s, box-shadow ease 0.2s;}
 }
+
+.shadow-button:hover {
+  transform: translate(0, -3px);
+  box-shadow: 0 20px 80px -10px black;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
@@ -154,4 +161,3 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
-

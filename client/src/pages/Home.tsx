@@ -7,8 +7,7 @@ export const Home = () => {
     return (
         <div> 
             <Hero />
-            <section className = "bg-[#111827] py-20">
-                <MenuHeading />
+            <section className = "bg-background pb-20">
                 <MenuTab />
                 <RecipeCard />
             </section>
