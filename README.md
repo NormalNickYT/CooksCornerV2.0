@@ -8,7 +8,7 @@ Well, that's what this website is for! Here, you can easily add and refer to you
 - ⚙️ [React]("https://react.dev/): The library for web and native user interfaces
 - 😎 [TypeScript]("https://www.typescriptlang.org/") JavaScript with syntax for types.
 - 💦 [Prisma]("https://www.prisma.io/"): An Object-Relational Mapping (ORM) tool that simplifies database interactions, ensuring smooth communication between the application and the underlying database.
-- 💽 [PlanetScale]("https://planetscale.com/"):  A cloud-hosted MySQL database service, offering scalable and reliable data storage.
+- 💽 [SupaBase]("https://supabase.com/"): A cloud-hosted PostgreSQL-databaseservice, offering scalable and reliable data storage.
 - 🚀 [Vercel]("https://vercel.com/home"): A serverless hosting platform, ensuring efficient deployment and scaling of the web application.
 - 🎨 [ShadCN for Vite]("https://www.shadcn-svelte.com/"):  UI components designed to enhance the visual appeal and user experience of the application.
 - 🖌️ [TailwindCSS]("https://tailwindcss.com/docs/installation"): Faster designing 
