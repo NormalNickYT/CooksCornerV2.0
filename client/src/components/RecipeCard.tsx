@@ -7,9 +7,7 @@ import {
     CardTitle,
   } from "@/components/ui/card"
 import { Button } from "./ui/button"
-import { Link } from "react-router-dom"
 import product from '../assets/img/food.png';
-import MenuTab from "./MenuTab";
 
 export const Recipes = () => {
     return (

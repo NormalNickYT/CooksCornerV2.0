@@ -16,8 +16,8 @@ const Navbar = () => {
     ];
 
     return (
-      <nav className='sticky top-0 py-3 z-50 backdrop-blur-lg border-neutral-700/80 text-text bg-light-background dark:bg-dark-background border-b '>
-        <div className="container px-4 mx-auto relative lg:text-sm"> 
+      <nav className='sticky md:px-20 sm:px-20 top-0 z-50 backdrop-blur-lg border-neutral-700/80 text-text bg-light-background dark:bg-dark-background border-b '>
+        <div className="px-4 mx-auto lg:text-sm"> 
         <div className="flex justify-between items-center">
           <div className="flex items-center flex-shrink-0">
            <h1 className='w-full text-2xl font-bold dark:text-dark-text'>CooksCorner</h1>
