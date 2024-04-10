@@ -2,10 +2,17 @@ import { PrismaClient, Prisma } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function Seed() {
-  const category = await prisma.category.create({
+
+  const category1 = await prisma.category.create({
     data: {
-      title: 'Some Category Title'
-    }
+      title: 'Lunch',
+    },
+  });
+
+  const category2 = await prisma.category.create({
+    data: {
+      title: 'Breakfast',
+    },
   });
 
   // Seed some test data 
@@ -19,13 +26,15 @@ async function Seed() {
       avatar: 'https://cdn.pixabay.com/photo/2015/02/13/00/43/apples-634572_1280.jpg',
       googleId: '1234567890',
       posts: {
-        create: {
+        create: [{
           title: 'Tacos Gerecht',
           url: 'https://www.prisma.io/nextjs',
-          image: 'https://cdn.pixabay.com/photo/2015/02/13/00/43/apples-634572_1280.jpg', 
-          categoryId: category.id, 
+          image: 'https://cdn.pixabay.com/photo/2015/02/13/00/43/apples-634572_1280.jpg',
+          categories: {
+            connect: [{ id: category1.id }, { id: category2.id }],
+          },
           createdAt: new Date(),
-      },
+        }],
     },
     },
   });

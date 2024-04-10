@@ -1,4 +1,4 @@
-/** @type {import('tailwindcss').Config} */
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
   darkMode: ["class"],
@@ -18,23 +18,32 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Poppins", "sans-serif"],
+      },
       colors: {
-        //'text': '#1d061e',
-        //background: "#e4e2e4",
-        //primary: "#ff999b",
-        //secondary: "#e27395",
-        //accent: "#c82f1e",
+        light: {
+          text: "#1d061e",
+          background: "#FDF2FD",
+          primary: "#ff999b",
+          primary20: "hsl(359, 100%, 80%, 20%)",
+          secondary: "#e27395",
+          secondary30: "hsl(342, 66%, 67%, 30%)",
+          accent: "#c82f1e",
+        },
+        dark: {
+          text: "#fce8fb",
+          text5: "hsl(303, 77%, 95%, 5%)",
+          background: "#1A1B1D",
+          primary: "#660002",
+          primary5: "hsl(359, 100%, 20%, 5%)",
+          secondary: "#8d1d3f",
+          secondary30: "hsl(342, 66%, 33%, 30%)",
+          accent: "#e14635",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        dark: "#020612",
-        text: "#fce8fb",
-        background: "#1D1B1D",
-        primary: "#660002",
-        primary5: "hsl(359, 100%, 20%, 5%)",
-        secondary: "#8d1d3f",
-        secondary30: "hsl(342, 66%, 33%, 30%)",
-        accent: "#e14635",
         foreground: "hsl(var(--foreground))",
         destructive: {
           DEFAULT: "hsl(var(--destructive))",

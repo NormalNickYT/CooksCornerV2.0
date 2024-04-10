@@ -13,8 +13,10 @@ import MenuTab from "./MenuTab";
 
 export const Recipes = () => {
     return (
-     <div className="container mx-auto my-10">
-        <Card className="bg-primary5 max-w-sm rounded-lg overflow-hidden transition duration-300 hover:scale-105">
+     <div className="container mx-auto my-10 flex justify-center">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
+        <div className="max-w-sm">
+        <Card className="dark:bg-dark-text5 bg-light-primary20 max-w-sm rounded-lg overflow-hidden transition duration-300 hover:scale-105">
             <CardHeader className="relative flex items-center justify-center">
             <img
                 src= {product}
@@ -31,21 +33,23 @@ export const Recipes = () => {
                 <Category>Lunch</Category>
                 <Category>Dinner</Category>
             </div>
-            <p className="text-[#7E8C9A] mb-2 font-semibold">Nick Koster</p>
+            <p className="dark:text-[#7E8C9A] mb-2 font-semibold">Nick Koster</p>
             </CardContent>
             <CardFooter className="p-4">
-                <Button className = "bg-accent text-white"> 
+                <Button className = "dark:bg-dark-accent bg-light-primary dark:text-white"> 
                     Check Recipe 
                 </Button>
             </CardFooter>
         </Card>
+        </div> 
+     </div>
     </div>
     )
 }
 
 const Category= ({ children }: { children: React.ReactNode }) => {
     return (
-        <div className="bg-secondary30 rounded-full px-4 py-1">
+        <div className="dark:bg-dark-secondary30 bg-light-secondary30 rounded-full px-4 py-1">
             {children}
         </div>
     );

@@ -9,8 +9,7 @@ export const Layout = ({ children}: Props) => {
         <div> 
         <div className="min-h-screen">
             <Navbar />
-            <div className="mx-auto flex-1">{children}</div>
-            {/* <Footer /> */}
+            <div className="w-full">{children}</div>
             </div>
         </div>
 

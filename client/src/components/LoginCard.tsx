@@ -9,39 +9,58 @@ import {
     CardHeader,
     CardTitle,
   } from "@/components/ui/card"
+import { Link } from "react-router-dom"
 
 export const LoginCard = () => {
     const handleGoogleLogin = () => {
         window.location.href = 'http://localhost:5000/auth/google';
-      };
+    };
+      
     return (
-        <div >
-         <Card className="w-[400px] bg-background">
-            <CardHeader>
-                <CardTitle>Login</CardTitle>
-                <CardDescription>Fill in your information</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <form>
-                <div className="grid w-full items-center gap-4">
-                    <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">Email</Label>
-                    <Input id="name" placeholder="john@hotmail.com" />
-                    </div>
-                    <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="framework">Pasword</Label>
-                    <Input id="Password" placeholder="password" />
-                    </div>
+        <Card className="mx-auto max-w-sm bg-light-background dark:bg-dark-background">
+          <CardHeader>
+            <CardTitle className="text-2xl">Login</CardTitle>
+            <CardDescription>
+              Enter your email below to login to your account
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                  required
+                  className="dark:text-black"
+                />
+              </div>
+              <div className="grid gap-2">
+                <div className="flex items-center">
+                  <Label htmlFor="password">Password</Label>
+                  <Link className="ml-auto inline-block text-sm underline" to={"/forgot"}>
+                    Forgot your password?
+                  </Link>
                 </div>
-                </form>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-                <Button variant="outline">Cancel</Button>
-                <Button onClick={handleGoogleLogin}>Login</Button>
-            </CardFooter>
-        </Card>      
-        </div>
-    )
+                <Input className="dark:text-black" id="password" type="password" required />
+              </div>
+              <Button type="submit" className="w-full bg-gradient-to-r from-dark-accent to-dark-secondary">
+                Login
+              </Button>
+              <Button variant="outline" className="w-full dark:bg-dark-secondary30">
+                Login with Google
+              </Button>
+            </div>
+            <div className="mt-4 text-center text-sm">
+              Don&apos;t have an account?{" "}
+              <Link className="underline" to={"/register"} >
+                Sign up
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      )
 }
 
 export default LoginCard

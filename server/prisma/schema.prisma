@@ -24,8 +24,7 @@ model Post {
   title      String
   userId     Int        @unique
   user       User       @relation(fields: [userId], references: [id])
-  categoryId Int
-  category   Category[]
+  categories Category[]
   url        String
   image      String
   createdAt  DateTime   @default(now())
@@ -36,5 +35,5 @@ model Post {
 model Category {
   id    Int    @id @default(autoincrement())
   title String
-  post  Post[]
+  posts Post[]
 }

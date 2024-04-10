@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar"
 import {Route, Routes} from "react-router-dom"
 import Home from "./pages/Home"
 import Login from "./pages/Login"
+import Profile from "./pages/Profile"
 import { Layout } from "./layouts/layout"
 
 function App() {
@@ -17,6 +18,11 @@ function App() {
       <Route path="/Login" element={
          <Layout>
          <Login />
+       </Layout>
+      } />
+      <Route path="/Profile" element={
+         <Layout>
+         <Profile />
        </Layout>
       } />
     </Routes> 
