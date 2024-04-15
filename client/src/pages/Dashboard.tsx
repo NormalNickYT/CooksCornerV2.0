@@ -1,4 +1,4 @@
-
+import { DashAddRecipe } from "@/components/dashboard/DashAddRecipe";
 import { DashComp } from "@/components/dashboard/DashComp";
 import { DashRecipes } from "@/components/dashboard/DashRecipes"
 import { DashSideBar } from "@/components/dashboard/DashSideBar"
@@ -21,6 +21,7 @@ export const Dashboard = () => {
       <DashSideBar />
         {tab === 'dash' && <DashComp />}
         {tab === 'recipes' && <DashRecipes />}
+        {tab === 'addrecipe' && <DashAddRecipe />}
     </div>
   )
 }

@@ -1,36 +1,18 @@
 import {
-    LineChart,
-    Package,
     Home,
-    Users2,
-    Settings,
     LibraryBig,
     Star
-  } from "lucide-react"
-
+} from "lucide-react"
 import {
     Tooltip,
     TooltipContent,
     TooltipTrigger,
     TooltipProvider,
-  } 
-from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip"
 import { Link, useLocation } from "react-router-dom"
-import { SetStateAction, useEffect, useState } from "react";
-
+import { useEffect, useState } from "react";
 
 export const DashSideBar = () => {
-    // const { pathname } = useLocation();
-    // const [activePath, setActivePath] = useState("");
-
-    // useEffect(() => {
-    //   setActivePath(pathname);
-    // }, [pathname]);
-
-    // const isActivePath = (targetPath: string) => {
-    //   return activePath === targetPath;
-    // };
-
     const location = useLocation();
     const [tab, setTab] = useState('');
     useEffect(() => {
@@ -49,8 +31,7 @@ export const DashSideBar = () => {
             <TooltipTrigger asChild>
               <Link
                 className={`flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${tab === "dash" ? "" : "text-muted-foreground"}`}
-                to="/dashboard?tab=dash"
-                >
+                to="/dashboard?tab=dash">
                 <Home className="h-5 w-5" />
                 <span className="sr-only">Dashboard</span>
               </Link>
@@ -63,8 +44,7 @@ export const DashSideBar = () => {
             <TooltipTrigger asChild>
               <Link
                 className={`flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${tab === "recipes" ? "" : "text-muted-foreground"}`}
-                to="/dashboard?tab=recipes"
-                >
+                to="/dashboard?tab=recipes">
                 <LibraryBig className="h-5 w-5" />
                 <span className="sr-only">Recipes</span>
               </Link>

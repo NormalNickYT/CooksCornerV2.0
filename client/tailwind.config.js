@@ -32,7 +32,7 @@ module.exports = {
           accent: "hsl(var(--accent))",
         },
         dark: {
-          text: "#hsl(var(--foreground))",
+          text: "hsl(var(--foreground))",
           text5: "hsl(303, 77%, 95%, 5%)",
           background: "hsl(var(--background))",
           primary: "hsl(var(--primary))",
@@ -40,6 +40,7 @@ module.exports = {
           secondary: "hsl(var(--secondary))",
           secondary30: "hsl(342, 66%, 33%, 30%)",
           accent: "hsl(var(--accent))",
+          input: "hsl(var(--input))",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
