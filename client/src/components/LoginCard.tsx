@@ -5,7 +5,6 @@ import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
   } from "@/components/ui/card"
@@ -43,12 +42,12 @@ export const LoginCard = () => {
                     Forgot your password?
                   </Link>
                 </div>
-                <Input className="dark:text-black" id="password" type="password" required />
+                <Input className="dark:text-black" id="password" type="password"  placeholder="password" required />
               </div>
               <Button type="submit" className="w-full bg-gradient-to-r from-dark-accent to-dark-secondary">
                 Login
               </Button>
-              <Button variant="outline" className="w-full dark:bg-dark-secondary30">
+              <Button onClick={handleGoogleLogin} variant="outline" className="w-full dark:bg-dark-secondary30">
                 Login with Google
               </Button>
             </div>

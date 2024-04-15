@@ -3,10 +3,9 @@ import Navbar from "./components/Navbar"
 import {Route, Routes} from "react-router-dom"
 import Home from "./pages/Home"
 import Login from "./pages/Login"
-import Profile from "./pages/Profile"; // Importeer Profile component
-import ProfileRecipes from "./pages/profile/ProfileRecipes"; // Importeer ProfileRecipes component
+import Profile from "./pages/Dashboard"; // Importeer Profile component
 import { Layout } from "./layouts/layout"
-import { Recipes } from "./components/dashboard/Recipes"
+import { Recipes } from "./components/dashboard/DashRecipes"
 
 function App() {
   return (
@@ -21,11 +20,10 @@ function App() {
          <Layout>
           <Login />
          </Layout>
-         
       } 
       />
-      <Route path="/profile" element={<Layout><Profile /></Layout>} />
-      <Route path="/profile/recipes" element={<Layout><ProfileRecipes /></Layout>} />
+      {/* WILL ADD: only authorized users allowed  */}
+      <Route path="/dashboard" element={<Layout><Profile /></Layout>} />
     </Routes> 
     </>
   )

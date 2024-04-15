@@ -1,7 +1,7 @@
 
-import { Recipes } from "@/components/dashboard/Recipes"
-import { SideBar } from "@/components/dashboard/SideBar"
-import { Dashboard } from "@/components/dashboard/Main"
+import { Recipes } from "@/components/dashboard/DashRecipes"
+import { SideBar } from "@/components/dashboard/DashSideBar"
+import { Dashboard } from "@/components/dashboard/DashComp"
 
 export const ProfileRecipes = () => {
   return (

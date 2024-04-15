@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar"
 import { SVGProps } from "react"
 import { JSX } from "react/jsx-runtime"
-import { SideBarMobile } from "./SideBarMobile"
+import { DashSideBarMobile } from "./DashSideBarMobile"
 import {
   Search
 } from "lucide-react"
@@ -21,22 +21,16 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 
-export function Dashboard() {
+export function DashComp() {
   return (
     <div className="flex flex-col min-h-screen w-full sm:gap-4 sm:py-4 sm:pl-14 flex-col">
       <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-        <SideBarMobile />
+        <DashSideBarMobile />
         <Breadcrumb className="hidden md:flex">
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
                   <Link to={""}>Dashboard</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to={""}>My Recipes</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
@@ -69,45 +63,48 @@ export function Dashboard() {
           </DropdownMenu>
       </header>
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+      <div className="flex items-center">
+        <div className="relative flex-shrink-0">
+          <Avatar className="h-32 w-32">
+            {/* Dynamic image van gebruiker */}
+            <AvatarImage src="https://github.com/normalnickyt.png" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </div>
+        <div className="ml-4 md:ml-8">
+          <h1 className="text-3xl md:text-4xl">Welcome Nick</h1>
+          <h2 className="text-lg md:text-xl">To your dashboard</h2>
+        </div>
+      </div>
         <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
           <Card x-chunk="dashboard-01-chunk-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+              <CardTitle className="text-sm font-medium">Amount of Recipes</CardTitle>
               <DollarSignIcon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">$45,231.89</div>
+              <div className="text-2xl font-bold">20</div>
               <p className="text-xs text-muted-foreground">+20.1% from last month</p>
             </CardContent>
           </Card>
           <Card x-chunk="dashboard-01-chunk-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Subscriptions</CardTitle>
+              <CardTitle className="text-sm font-medium">Favorites</CardTitle>
               <UsersIcon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+2350</div>
+              <div className="text-2xl font-bold">20</div>
               <p className="text-xs text-muted-foreground">+180.1% from last month</p>
             </CardContent>
           </Card>
           <Card x-chunk="dashboard-01-chunk-2">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Sales</CardTitle>
+              <CardTitle className="text-sm font-medium">Comments</CardTitle>
               <CreditCardIcon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+12,234</div>
+              <div className="text-2xl font-bold">30</div>
               <p className="text-xs text-muted-foreground">+19% from last month</p>
-            </CardContent>
-          </Card>
-          <Card x-chunk="dashboard-01-chunk-3">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Now</CardTitle>
-              <ActivityIcon className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">+573</div>
-              <p className="text-xs text-muted-foreground">+201 since last hour</p>
             </CardContent>
           </Card>
         </div>
@@ -115,8 +112,8 @@ export function Dashboard() {
           <Card className="xl:col-span-2" x-chunk="dashboard-01-chunk-4">
             <CardHeader className="flex flex-row items-center">
               <div className="grid gap-2">
-                <CardTitle>Transactions</CardTitle>
-                <CardDescription>Recent transactions from your store.</CardDescription>
+                <CardTitle>Recent Recipes</CardTitle>
+                <CardDescription>Recent recipes from your collection.</CardDescription>
               </div>
               <Button asChild className="ml-auto gap-1" size="sm">
                 <Link to={""}>
@@ -129,7 +126,7 @@ export function Dashboard() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Customer</TableHead>
+                    <TableHead>Recipes</TableHead>
                     <TableHead className="hidden xl:table-column">Type</TableHead>
                     <TableHead className="hidden xl:table-column">Status</TableHead>
                     <TableHead className="hidden xl:table-column">Date</TableHead>
@@ -213,7 +210,7 @@ export function Dashboard() {
           </Card>
           <Card x-chunk="dashboard-01-chunk-5">
             <CardHeader>
-              <CardTitle>Recent Sales</CardTitle>
+              <CardTitle>Recent Favorites</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-8">
               <div className="flex items-center gap-4">

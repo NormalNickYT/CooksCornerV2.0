@@ -55,9 +55,11 @@ const Navbar = () => {
           <div onClick={handleNav} className='z-50 lg:hidden md:flex flex-col justify-end '>
             {mobileDrawerOpen ? <AiOutlineClose color = 'white' size={20} /> : <AiOutlineMenu color = 'white' size={20} />}
           </div>
-          {mobileDrawerOpen && (
-            <div className='fixed right-0 z-20 border-b dark:bg-dark-background w-full p-12 flex flex-col justify-center items-center lg:hidden'> 
-              <ul>
+        </div>
+        </div>
+        {mobileDrawerOpen && (
+            <div className='fixed right-0 z-20 border-b flex flex-col dark:bg-dark-background w-full p-12 justify-center items-center lg:hidden'> 
+              <ul className="flex flex-col items-center gap-4 ">
                 {navItems.map(item => (
                   <li
                     key={item.id}
@@ -80,8 +82,6 @@ const Navbar = () => {
             </div>
             </div>
           )}
-        </div>
-        </div>
       </nav>
     );
   };

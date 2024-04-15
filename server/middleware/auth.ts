@@ -1,9 +1,7 @@
 // middleware/passport-setup.ts
-import { PrismaClient } from '@prisma/client';
+import prisma from '../prisma/prisma'; // Pas het pad aan afhankelijk van je projectstructuur
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-
-const prisma = new PrismaClient();
 
 const clientID = process.env.CLIENTID;
 const clientSecret = process.env.CLIENTSECRET;
@@ -14,9 +12,9 @@ if (!clientID || !clientSecret || !callbackURL) {
 }
 
 passport.use(new GoogleStrategy({
-    clientID,
-    clientSecret,
-    callbackURL,
+    clientID: clientID,
+    clientSecret: clientSecret,
+    callbackURL: callbackURL
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         const alreadyUser = await prisma.user.findFirst({
@@ -30,7 +28,6 @@ passport.use(new GoogleStrategy({
     } catch (error) {
         console.log(error);
     }
-
     try {
         const newUser = await prisma.user.create({
             data: {
@@ -40,7 +37,7 @@ passport.use(new GoogleStrategy({
                 name: profile.displayName,
                 avatar: profile.photos?.[0].value || '',
             }
-        
+
         });
         return done(null, newUser);
     } catch (error) {
