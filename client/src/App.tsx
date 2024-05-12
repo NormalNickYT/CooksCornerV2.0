@@ -4,13 +4,12 @@ import Home from "./pages/Home"
 import Login from "./pages/Login"
 import Dashboard from "./pages/Dashboard"; 
 import { Layout } from "./layouts/layout"
-import { useEffect, useState } from "react"
-import axios from "axios"
 import AuthProvider from "./hooks/AuthProvider";
 
 function App() {
   return (
     <>
+    {/* TODO: Add private routes here */}
     <AuthProvider>
      <Navbar />
       <Routes> 

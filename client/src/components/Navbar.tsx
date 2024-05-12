@@ -1,25 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
 import { NavLink } from 'react-router-dom';
 import Switcher from './ui/switcher';
 import User from '@/types/User';
 import { useAuth } from '@/hooks/AuthProvider';
+import axios from 'axios';
 
 const Navbar = () => {
     const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-    const { user, logout, loggedIn, checkLoginState } = useAuth();
+    const { user, setUser } = useAuth();
 
     const handleNav = () => {
       setMobileDrawerOpen(!mobileDrawerOpen);
     };
 
-    const handleLogout = async () => {
-      try {
-        await logout();
-        checkLoginState();
-      } catch (err) {
-        console.error(err);
-      }
+    const handleLogout = () => {
+      setUser(null);
+      // TODO: Still need env variable for this
+      window.open("http://localhost:5000/logout", "_self");
     };
   
     const navItems = [

@@ -43,14 +43,20 @@ passport.use(new GoogleStrategy({
     }
 }));
 
-// Serialize user into the session
-passport.serializeUser((user: any, done) => {
-    done(null, user);
-});
+passport.serializeUser(function(user : any, cb) {
+    process.nextTick(function() {
+      return cb(null, {
+        id: user.id,
+        username: user.username,
+        picture: user.picture
+      });
+    });
+  });
 
-// Deserialize user from the session
-passport.deserializeUser((user: any, done) => {
-    done(null, user);
-});
+passport.deserializeUser(function(user : any, cb) {
+    process.nextTick(function() {
+      return cb(null, user);
+    });
+  });
 
 export default passport;

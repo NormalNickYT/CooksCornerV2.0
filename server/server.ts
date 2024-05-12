@@ -10,6 +10,7 @@ const session = require('express-session');
 const app = express();
 const port = 5000;
 
+// TODO: Secret needs fix for production
 app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
