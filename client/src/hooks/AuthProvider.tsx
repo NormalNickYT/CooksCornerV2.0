@@ -5,25 +5,24 @@ import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
   user: User | null; 
-  checkUser: () => void;
+  loggedIn: boolean;
+  checkLoginState: () => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null, 
-  checkUser: () => {},
+  loggedIn: false,
+  checkLoginState: () => {},
   logout: () => {},
 });
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    checkUser();
-  }, []); 
-
-  const checkUser = async () => {
+  const checkLoginState = async () => {
     try { 
       const response = await fetch("http://localhost:5000/auth/login/success", {
         method: "GET",
@@ -35,15 +34,17 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       }); 
       const res = await response.json();
       if (res.success) {
-        setUser(res.user);
-        navigate("/dashboard?tab=dash");
-        return;
-      }
-      throw new Error(res.message);
+        setLoggedIn(true);
+        user && setUser(user);
+      } 
     } catch (err) {
       console.error(err);
     }
   }
+
+  useEffect(() => {
+    checkLoginState();
+  }, [checkLoginState]); 
 
   const logout = async () => {
     try {
@@ -59,11 +60,12 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (err) {
       console.error(err);
+      setUser(null); 
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, checkUser, logout }}>
+    <AuthContext.Provider value={{ user, checkLoginState, logout, loggedIn }}>
       {children}
     </AuthContext.Provider>
   );

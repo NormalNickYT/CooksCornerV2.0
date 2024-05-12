@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
 import { NavLink } from 'react-router-dom';
 import Switcher from './ui/switcher';
@@ -6,18 +6,20 @@ import User from '@/types/User';
 import { useAuth } from '@/hooks/AuthProvider';
 
 const Navbar = () => {
-    const SERVER_URL_DEV = "http://localhost:5000/auth/login/success"
     const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-    const { user } = useAuth();
-    const auth = useAuth();
-    
+    const { user, logout, loggedIn, checkLoginState } = useAuth();
+
     const handleNav = () => {
       setMobileDrawerOpen(!mobileDrawerOpen);
     };
 
-    const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      e.preventDefault();
-      await auth.logout();
+    const handleLogout = async () => {
+      try {
+        await logout();
+        checkLoginState();
+      } catch (err) {
+        console.error(err);
+      }
     };
   
     const navItems = [
