@@ -11,10 +11,15 @@ import {
 import { Link } from "react-router-dom"
 
 export const LoginCard = () => {
-    const handleGoogleLogin = () => {
-        window.location.href = 'http://localhost:5000/auth/google';
-    };
-      
+    const handleOAuthSubmitEvent = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.preventDefault();
+      try {
+          window.location.href = 'http://localhost:5000/auth/google'; 
+      } catch (err) {
+          console.error(err);
+      }
+    };    
+
     return (
         <Card className="mx-auto max-w-sm bg-light-background dark:bg-dark-background">
           <CardHeader>
@@ -47,7 +52,7 @@ export const LoginCard = () => {
               <Button type="submit" className="w-full bg-gradient-to-r from-dark-accent to-dark-secondary">
                 Login
               </Button>
-              <Button onClick={handleGoogleLogin} variant="outline" className="w-full dark:bg-dark-secondary30">
+              <Button onClick={handleOAuthSubmitEvent} variant="outline" className="w-full dark:bg-dark-secondary30">
                 Login with Google
               </Button>
             </div>

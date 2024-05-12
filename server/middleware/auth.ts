@@ -1,5 +1,4 @@
-// middleware/passport-setup.ts
-import prisma from '../prisma/prisma'; // Pas het pad aan afhankelijk van je projectstructuur
+import prisma from '../prisma/prisma'; 
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
@@ -37,7 +36,6 @@ passport.use(new GoogleStrategy({
                 name: profile.displayName,
                 avatar: profile.photos?.[0].value || '',
             }
-
         });
         return done(null, newUser);
     } catch (error) {

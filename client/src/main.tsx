@@ -7,11 +7,14 @@ import {
   RouterProvider,
   BrowserRouter,
 } from "react-router-dom";
+import AuthProvider from './hooks/AuthProvider.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
+    <AuthProvider>
       <App />
+    </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
 )

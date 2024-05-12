@@ -1,13 +1,23 @@
 import { useState } from 'react'
-import { AiOutlineMenu, AiOutlineSearch, AiOutlineClose } from 'react-icons/ai';
+import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
 import { NavLink } from 'react-router-dom';
 import Switcher from './ui/switcher';
+import User from '@/types/User';
+import { useAuth } from '@/hooks/AuthProvider';
 
 const Navbar = () => {
+    const SERVER_URL_DEV = "http://localhost:5000/auth/login/success"
     const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-
+    const { user } = useAuth();
+    const auth = useAuth();
+    
     const handleNav = () => {
       setMobileDrawerOpen(!mobileDrawerOpen);
+    };
+
+    const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e.preventDefault();
+      await auth.logout();
     };
   
     const navItems = [
@@ -41,9 +51,17 @@ const Navbar = () => {
           ))}
         </ul>
         <div className="hidden lg:flex justify-center space-x-8 items-center">
-            <a href="/login" className="py-2 px-3 border rounded-md dark:text-dark-text transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105 duration-300">
-              Sign In
-            </a>
+          {user ? (
+            <a href='#' onClick = {handleLogout} className="py-2 px-3 border rounded-md dark:text-dark-text transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105 duration-300">
+              Sign Out
+          </a>
+          ) : (
+            <>
+              <a href="/login" className="py-2 px-3 border rounded-md dark:text-dark-text transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105 duration-300">
+                Sign In
+              </a>
+            </>
+          )}
             <a
               href="/register"
               className="bg-gradient-to-r from-dark-accent to-dark-secondary py-2 px-3 rounded-md dark:text-dark-text transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105 duration-300"
@@ -70,16 +88,23 @@ const Navbar = () => {
                 ))}
               </ul>
               <div className="flex space-x-6">
-              <a href="/login" className="py-2 px-3 border rounded-md dark:text-dark-text">
-                Sign In
-              </a>
-              <a
-                href="/register"
-                className="py-2 px-3 rounded-md bg-gradient-to-r from-dark-accent to-dark-secondary dark:text-dark-text"
-              >
-                Create an account
-              </a>
-            </div>
+              {user ? (
+                <a onClick={handleLogout} className="py-2 px-3 border rounded-md dark:text-dark-text">
+                Sign Out
+                </a>
+              ) : (
+                <>
+                  <a href='/login' className="py-2 px-3 border rounded-md dark:text-dark-text">
+                    Sign In
+                  </a>
+                  <a
+                  href="/register"
+                  className="py-2 px-3 rounded-md bg-gradient-to-r from-dark-accent to-dark-secondary dark:text-dark-text">
+                    Create an account
+                  </a>
+                </>
+                )}
+              </div>
             </div>
           )}
       </nav>
