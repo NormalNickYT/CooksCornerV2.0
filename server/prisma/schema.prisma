@@ -10,12 +10,13 @@ generator client {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   username String
-  email    String @unique
+  email    String  @unique
   avatar   String
   name     String
-  googleId String @unique
+  googleId String? @unique
+  password String?
   posts    Post[]
 }
 

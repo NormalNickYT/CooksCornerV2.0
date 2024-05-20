@@ -7,8 +7,15 @@ import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar"
 import { SVGProps } from "react"
 import { JSX } from "react/jsx-runtime"
 import { DashHeader } from "./DashHeader"
+import { useAuth } from "@/hooks/AuthProvider"
 
 export function DashComp() {
+  const {user} = useAuth();
+
+  if (!user) {
+    return <div>Loading...</div>; 
+  }
+
   return (
     <div className="flex flex-col min-h-screen w-full sm:gap-4 sm:py-4 sm:pl-14 flex-col">
       <DashHeader />
@@ -16,14 +23,13 @@ export function DashComp() {
       <div className="flex items-center">
         <div className="relative flex-shrink-0">
           <Avatar className="h-32 w-32">
-            {/* Dynamic image van gebruiker */}
-            <AvatarImage src="https://github.com/normalnickyt.png" />
+            <AvatarImage src={user.avatar} referrerPolicy="no-referrer" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </div>
         <div className="ml-4 md:ml-8">
-          <h1 className="text-3xl md:text-4xl">Welcome Nick</h1>
-          <h2 className="text-lg md:text-xl">To your dashboard</h2>
+          <h1 className="text-3xl md:text-4xl">Welcome {user.username}</h1>
+          <h2 className="text-lg md:text-xl">This is your dashboard</h2>
         </div>
       </div>
         <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">

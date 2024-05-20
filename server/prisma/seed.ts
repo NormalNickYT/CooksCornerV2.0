@@ -24,6 +24,7 @@ async function Seed() {
       username: 'Test',
       avatar: 'https://cdn.pixabay.com/photo/2015/02/13/00/43/apples-634572_1280.jpg',
       googleId: '1234567890',
+      password: '',
       posts: {
         create: [{
           title: 'Tacos Gerecht',

@@ -4,16 +4,18 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const router = Router();
 
-router.get("/", async (req: Request, res: Response) => {
+// Get Recipes
+router.get("/getrecipes", async (req: Request, res: Response) => {
   const postList = await prisma.post.findMany();
   res.json(postList);
 });
 
-router.post("/", async (req: Request, res: Response) => {
+// Create Recipes
+router.post("/create", async (req: Request, res: Response) => {
   try {
-    const post = req.body;
+    const recipe = req.body;
     const newPost = await prisma.post.create({
-      data: post,
+      data: recipe,
     });
     res.json(newPost);
   } catch (error) {

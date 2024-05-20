@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Switcher from './ui/switcher';
 import User from '@/types/User';
 import { useAuth } from '@/hooks/AuthProvider';
@@ -8,16 +8,29 @@ import axios from 'axios';
 
 const Navbar = () => {
     const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-    const { user, setUser } = useAuth();
+    const { setUser, isAuthenticated, setIsAuthenticated } = useAuth();
+    const navigate = useNavigate();
 
     const handleNav = () => {
       setMobileDrawerOpen(!mobileDrawerOpen);
     };
 
-    const handleLogout = () => {
-      setUser(null);
-      // TODO: Still need env variable for this
-      window.open("http://localhost:5000/logout", "_self");
+    const handleLogout = async () => {
+      try {
+        const res = await fetch('/api/logout', {
+          method: 'POST',
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          console.log(data.message);
+        } else {
+          setUser(null);
+          setIsAuthenticated(false);
+          navigate('/login', { replace: true })
+        }
+      } catch (error: any) {
+        console.log(error.message);
+      }
     };
   
     const navItems = [
@@ -51,7 +64,7 @@ const Navbar = () => {
           ))}
         </ul>
         <div className="hidden lg:flex justify-center space-x-8 items-center">
-          {user ? (
+          {isAuthenticated ? (
             <a href='#' onClick = {handleLogout} className="py-2 px-3 border rounded-md dark:text-dark-text transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105 duration-300">
               Sign Out
           </a>
@@ -60,14 +73,14 @@ const Navbar = () => {
               <a href="/login" className="py-2 px-3 border rounded-md dark:text-dark-text transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105 duration-300">
                 Sign In
               </a>
-            </>
-          )}
-            <a
+              <a
               href="/register"
               className="bg-gradient-to-r from-dark-accent to-dark-secondary py-2 px-3 rounded-md dark:text-dark-text transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105 duration-300"
             >
               Create an account
             </a>
+            </>
+          )}
             <Switcher />
           </div>
           <div onClick={handleNav} className='z-50 lg:hidden md:flex flex-col justify-end '>
@@ -88,7 +101,7 @@ const Navbar = () => {
                 ))}
               </ul>
               <div className="flex space-x-6">
-              {user ? (
+              {isAuthenticated ? (
                 <a onClick={handleLogout} className="py-2 px-3 border rounded-md dark:text-dark-text">
                 Sign Out
                 </a>

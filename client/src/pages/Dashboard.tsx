@@ -3,11 +3,12 @@ import { DashComp } from "@/components/dashboard/DashComp";
 import { DashRecipes } from "@/components/dashboard/DashRecipes"
 import { DashSideBar } from "@/components/dashboard/DashSideBar"
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation} from "react-router-dom";
 
 export const Dashboard = () => {
   const location = useLocation();
   const [tab, setTab] = useState('');
+
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get('tab');

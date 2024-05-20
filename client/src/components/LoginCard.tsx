@@ -11,15 +11,9 @@ import {
 import { Link } from "react-router-dom"
 
 export const LoginCard = () => {
-  
-    const handleOAuthSubmitEvent = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      e.preventDefault();
-      try {
-          window.location.href = 'http://localhost:5000/auth/google'; 
-      } catch (err) {
-          console.error(err);
-      }
-    };    
+    const handleOAuthSubmitEvent = () => {
+      window.location.href = '/api/auth/google'; 
+    };
 
     return (
         <Card className="mx-auto max-w-sm bg-light-background dark:bg-dark-background">

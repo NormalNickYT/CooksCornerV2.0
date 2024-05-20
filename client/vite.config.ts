@@ -9,6 +9,14 @@ export default ({ mode }) => {
   process.env = {...process.env, ...loadEnv(mode, process.cwd())};
 
   return defineConfig({
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost:5000',
+          secure: false,
+        },
+      },
+    },
     plugins: [react()],
     resolve: {
       alias: {
