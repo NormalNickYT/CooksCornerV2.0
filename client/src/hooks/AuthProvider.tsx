@@ -1,18 +1,24 @@
 import User from "@/types/User";
 import axios from "axios";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 interface AuthContextType {
-  user: User | null; 
-  setUser: React.Dispatch<React.SetStateAction<User | null>>; 
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
   isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
-  user: null, 
-  setUser: () => {}, 
+  user: null,
+  setUser: () => {},
   setIsAuthenticated: () => {},
   isAuthenticated: false,
   loading: true,
@@ -26,7 +32,9 @@ const useFetchUser = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/user", { withCredentials: true });
+        const response = await axios.get("/api/user", {
+          withCredentials: true,
+        });
         setUser(response.data);
         setIsAuthenticated(true);
       } catch (error) {
@@ -38,14 +46,17 @@ const useFetchUser = () => {
     };
     fetchData();
   }, []);
-    return { user, setUser, isAuthenticated, setIsAuthenticated, loading };
+  return { user, setUser, isAuthenticated, setIsAuthenticated, loading };
 };
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const { user, setUser, isAuthenticated, setIsAuthenticated, loading } = useFetchUser();
-  
+  const { user, setUser, isAuthenticated, setIsAuthenticated, loading } =
+    useFetchUser();
+
   return (
-    <AuthContext.Provider value={{ user, setUser, setIsAuthenticated, isAuthenticated, loading }}>
+    <AuthContext.Provider
+      value={{ user, setUser, setIsAuthenticated, isAuthenticated, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );

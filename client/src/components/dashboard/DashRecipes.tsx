@@ -93,7 +93,7 @@ export const DashRecipes = () => {
                 <CardHeader>
                   <CardTitle>Recipes</CardTitle>
                   <CardDescription>
-                    Manage your Recipes 
+                    Manage your Recipes
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -133,7 +133,7 @@ export const DashRecipes = () => {
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
                           Lunch
-                        </TableCell>        
+                        </TableCell>
                         <TableCell className="hidden md:table-cell">
                           2023-07-12 10:42 AM
                         </TableCell>
@@ -373,3 +373,4 @@ export const DashRecipes = () => {
       </div>
     )
 }
+export default DashRecipes
