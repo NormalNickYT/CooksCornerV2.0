@@ -18,13 +18,15 @@ export const MenuTab = () => {
     <div className="menu-tab pb-10">
       <div className="row">
         <div className="col-lg-12 m-auto">
-          <div className="lg:flex lg:px-20 text-4xl mb-6 text-text text-center justify-between items-center">
-            <div className="text-center dark:text-dark-text">Categories</div>
+          <div className="lg:flex lg:px-20 text-3xl mb-6 text-text text-center justify-between items-center">
+            <div className="text-center dark:text-dark-text font-semibold">
+              Categories
+            </div>
             <Button className="w-42 dark:bg-dark-primary text-white dark:text-dark-text px-4 py-2 transition duration-300 hover:-translate-y-0.5">
               <Link to={"/Login"}>All Categories</Link>
             </Button>
           </div>
-          <div className="menu-tab text-center">
+          <div className="menu-tab text-center font-semibold">
             <div className="filters-container grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 max-w-screen-md mx-auto">
               <div className="filter-wrapper">
                 <div

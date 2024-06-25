@@ -25,7 +25,7 @@ export const Recipes = () => {
               </div>
             </CardHeader>
             <CardContent className="p-4">
-              <CardTitle className="text-4xl font-semibold mb-2 font-bold">
+              <CardTitle className="text-4xl font-semibold mb-2">
                 Taco's
               </CardTitle>
               <div className="flex mb-2 space-x-2">

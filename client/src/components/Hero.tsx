@@ -6,7 +6,7 @@ export const Hero = () => {
   return (
     <section className="mx-auto max-w-full pb-20 px-4 items-center lg:flex md:px-20 min-h-screen bg-light-background bg-dark-background">
       <div className="space-y-4 flex-1 sm:text-center lg:text-left">
-        <h1 className="dark:text-dark-text text-4xl xl:text-4xl tracking-wide dark:text-text font-bold">
+        <h1 className="dark:text-dark-text text-4xl xl:text-6xl tracking-wide dark:text-text font-extrabold">
           The Best Place For
           <span className="bg-gradient-to-r from-dark-accent to-dark-secondary bg-clip-text text-transparent">
             {" "}

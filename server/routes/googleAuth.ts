@@ -1,6 +1,5 @@
 import express, { Request, Response, Router } from "express";
 import passport, { session } from "passport";
-import user from "../prisma/prisma";
 import prisma from "../prisma/prisma";
 const router = Router();
 const clientUrl =

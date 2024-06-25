@@ -1,4 +1,3 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
 import tailwindcssAnimate from 'tailwindcss-animate';
 
 export const darkMode = ["class"];
@@ -19,7 +18,7 @@ export const theme = {
   },
   extend: {
     fontFamily: {
-      sans: ["Poppins", ...defaultTheme.fontFamily.sans],
+      sans: ["Inter var", "ui-sans-serif", "system-ui", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", 'sans-serif'],
     },
     colors: {
       light: {

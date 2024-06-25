@@ -4,13 +4,19 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const router = Router();
 
-// Get Recipes
-router.get("/getrecipes", async (req: Request, res: Response) => {
+// Get all user posts
+router.get("/posts", async (req: Request, res: Response) => {
   const postList = await prisma.post.findMany();
   res.json(postList);
 });
 
-// Create Recipes
+// Get all specific user posts based on id
+router.get("/userPosts", async (req: Request, res: Response) => {
+  const userPosts = await prisma.post.findMany();
+  res.json(userPosts);
+});
+
+// Create Post
 router.post("/create", async (req: Request, res: Response) => {
   try {
     const recipe = req.body;
@@ -23,5 +29,8 @@ router.post("/create", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+// Modify a post
+
 
 export default router;

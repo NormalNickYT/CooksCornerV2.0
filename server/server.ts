@@ -1,17 +1,17 @@
 import express from "express";
-import routeRecipes  from './routes/recipe';
-import routeGoogleAuth  from './routes/googleAuth';
+import routePost from "./routes/post";
+import routeGoogleAuth from "./routes/googleAuth";
 import passport from "passport";
-require('dotenv').config()
+require("dotenv").config();
 require("./middleware/googleStrategy");
 const cors = require("cors");
-const session = require('express-session');
+const session = require("express-session");
 
 const app = express();
 const port = 5000;
 
 // TODO: Secret needs fix for production
-app.use(session({ secret: 'cats', resave: false, saveUninitialized: false }));
+app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -23,7 +23,7 @@ app.use(
   })
 );
 
-app.use("/recipe", routeRecipes);
+app.use("/post", routePost);
 app.use("/", routeGoogleAuth);
 
 app.listen(port, () => {
