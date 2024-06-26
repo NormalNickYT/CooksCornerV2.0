@@ -33,7 +33,7 @@ function App() {
             />
             <Route element={<PrivateRoute />}>
               <Route
-                path="/dashboard"
+                path="/dashboard/*"
                 element={
                   <Layout>
                     <Dashboard />

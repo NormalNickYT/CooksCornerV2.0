@@ -2,27 +2,19 @@ import { DashAddRecipe } from "@/components/dashboard/DashAddRecipe";
 import { DashComp } from "@/components/dashboard/DashComp";
 import { DashRecipes } from "@/components/dashboard/DashRecipes";
 import { DashSideBar } from "@/components/dashboard/DashSideBar";
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Navigate, Routes } from "react-router-dom";
+import { Route } from "react-router-dom";
 
 export const Dashboard = () => {
-  const location = useLocation();
-  const [tab, setTab] = useState("");
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const tabFromUrl = urlParams.get("tab");
-    if (tabFromUrl) {
-      setTab(tabFromUrl);
-    }
-  }, [location.search]);
-
   return (
-    <div className="flex min-h-screen w-full flex-col bg-muted/40 dark:bg-dark-background bg-light-background">
+    <div className="flex min-h-screen w-full flex-col bg-muted/40 dark:bg-dark-background">
       <DashSideBar />
-      {tab === "dash" && <DashComp />}
-      {tab === "recipes" && <DashRecipes />}
-      {tab === "addrecipe" && <DashAddRecipe />}
+      <Routes>
+        <Route path="dash" element={<DashComp />} />
+        <Route path="recipes" element={<DashRecipes />} />
+        <Route path="addrecipe" element={<DashAddRecipe />} />
+        <Route path="/" element={<Navigate to="dash" replace />} />
+      </Routes>
     </div>
   );
 };

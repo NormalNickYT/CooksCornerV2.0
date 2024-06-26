@@ -6,18 +6,14 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export const DashSideBar = () => {
   const location = useLocation();
-  const [tab, setTab] = useState("");
+
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const tabFromUrl = urlParams.get("tab");
-    if (tabFromUrl) {
-      setTab(tabFromUrl);
-    }
-  }, [location.search]);
+    console.log(location.pathname);
+  }, []);
 
   return (
     <aside className="fixed inset-y-30 left-0 z-10 hidden w-14 flex-col border-r sm:flex h-full ">
@@ -26,10 +22,13 @@ export const DashSideBar = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                className={`flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  tab === "dash" ? "" : "text-muted-foreground"
-                }`}
-                to="/dashboard?tab=dash"
+                className={`flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8
+                 ${
+                   location.pathname === "/dashboard/dash"
+                     ? ""
+                     : "text-muted-foreground"
+                 } `}
+                to="/dashboard/dash"
               >
                 <Home className="h-5 w-5" />
                 <span className="sr-only">Dashboard</span>
@@ -42,10 +41,13 @@ export const DashSideBar = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                className={`flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  tab === "recipes" ? "" : "text-muted-foreground"
-                }`}
-                to="/dashboard?tab=recipes"
+                className={`flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8
+                 ${
+                   location.pathname === "/dashboard/recipes"
+                     ? ""
+                     : "text-muted-foreground"
+                 } `}
+                to="/dashboard/recipes"
               >
                 <LibraryBig className="h-5 w-5" />
                 <span className="sr-only">Recipes</span>
@@ -58,10 +60,13 @@ export const DashSideBar = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                className={`flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  tab === "favorites" ? "" : "text-muted-foreground"
-                }`}
-                to={"/dashboard?tab=favorites"}
+                className={`flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8
+                   ${
+                     location.pathname === "/dashboard/favorites"
+                       ? ""
+                       : "text-muted-foreground"
+                   } `}
+                to={"/dashboard/favorites"}
               >
                 <Star className="h-5 w-5" />
                 <span className="sr-only">Favorites</span>
