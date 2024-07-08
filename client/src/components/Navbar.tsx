@@ -2,12 +2,12 @@ import { useState } from "react";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import Switcher from "./ui/switcher";
-import { useAuth } from "@/hooks/AuthProvider";
+import { useAuth } from "@/context/AuthProvider";
 import { CircleUserRound } from "lucide-react";
 
 const Navbar = () => {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-  const { setUser, isAuthenticated, setIsAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleNav = () => {
@@ -15,22 +15,8 @@ const Navbar = () => {
   };
 
   const handleLogout = async () => {
-    try {
-      const res = await fetch("/api/logout", {
-        method: "POST",
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        console.log(data.message);
-      } else {
-        setUser(null);
-        setIsAuthenticated(false);
-        navigate("/login", { replace: true });
-      }
-    } catch (error) {
-      const err = error as Error;
-      console.log(err.message);
-    }
+    await logout();
+    navigate("/login", { replace: true });
   };
 
   const navItems = [

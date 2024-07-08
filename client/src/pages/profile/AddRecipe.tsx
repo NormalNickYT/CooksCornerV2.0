@@ -26,11 +26,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { DashHeader } from "./DashHeader";
+import { DashHeader } from "../../components/profile/DashHeader";
 
-export function DashAddRecipe() {
+export function AddRecipes() {
   return (
-    <div className="flex flex-col min-h-screen w-full sm:gap-4 sm:py-4 sm:pl-14 flex-col">
+    <div className="flex min-h-screen w-full sm:gap-4 sm:py-4 sm:pl-14 flex-col">
       <DashHeader />
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
         <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
@@ -328,3 +328,5 @@ export function DashAddRecipe() {
     </div>
   );
 }
+
+export default AddRecipes;

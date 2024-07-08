@@ -19,10 +19,10 @@ import { Badge } from "@/components/ui/badge";
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { SVGProps } from "react";
 import { JSX } from "react/jsx-runtime";
-import { DashHeader } from "./DashHeader";
-import { useAuth } from "@/hooks/AuthProvider";
+import { DashHeader } from "../../components/profile/DashHeader";
+import { useAuth } from "@/context/AuthProvider";
 
-export function DashComp() {
+export function Dashboard() {
   const { user } = useAuth();
 
   if (!user) {
@@ -398,3 +398,5 @@ function UsersIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+export default Dashboard;

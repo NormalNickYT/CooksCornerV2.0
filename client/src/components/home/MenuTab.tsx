@@ -1,10 +1,10 @@
-import BreakFast from "../assets/img/breakfast.png";
-import Lunch from "../assets/img/sandwich.png";
-import Dinner from "../assets/img/meat.png";
-import Dessert from "../assets/img/cake.png";
-import popSound from "../assets/sounds/pop.mp3";
+import BreakFast from "../../assets/img/breakfast.png";
+import Lunch from "../../assets/img/sandwich.png";
+import Dinner from "../../assets/img/meat.png";
+import Dessert from "../../assets/img/cake.png";
+import popSound from "../../assets/sounds/pop.mp3";
 import useSound from "@/hooks/useSound";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 
 export const MenuTab = () => {

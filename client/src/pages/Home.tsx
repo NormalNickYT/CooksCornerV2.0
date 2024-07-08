@@ -1,6 +1,6 @@
-import Hero from "@/components/Hero";
-import MenuTab from "@/components/MenuTab";
-import RecipeCard from "@/components/RecipeCard";
+import Hero from "@/components/home/Hero";
+import MenuTab from "@/components/home/MenuTab";
+import RecipeCard from "@/components/home/RecipeCard";
 
 export const Home = () => {
   return (

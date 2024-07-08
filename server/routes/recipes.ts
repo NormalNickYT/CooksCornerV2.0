@@ -5,19 +5,19 @@ const prisma = new PrismaClient();
 const router = Router();
 
 // Get all user posts
-router.get("/posts", async (req: Request, res: Response) => {
+router.get("/recipes", async (req: Request, res: Response) => {
   const postList = await prisma.post.findMany();
   res.json(postList);
 });
 
 // Get all specific user posts based on id
-router.get("/userPosts", async (req: Request, res: Response) => {
+router.get("/userRecipes", async (req: Request, res: Response) => {
   const userPosts = await prisma.post.findMany();
   res.json(userPosts);
 });
 
 // Create Post
-router.post("/create", async (req: Request, res: Response) => {
+router.post("/createRecipe", async (req: Request, res: Response) => {
   try {
     const recipe = req.body;
     const newPost = await prisma.post.create({
@@ -31,6 +31,5 @@ router.post("/create", async (req: Request, res: Response) => {
 });
 
 // Modify a post
-
 
 export default router;

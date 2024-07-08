@@ -13,7 +13,7 @@ export const DashSideBar = () => {
 
   useEffect(() => {
     console.log(location.pathname);
-  }, []);
+  }, [location.pathname]);
 
   return (
     <aside className="fixed inset-y-30 left-0 z-10 hidden w-14 flex-col border-r sm:flex h-full ">
@@ -24,11 +24,11 @@ export const DashSideBar = () => {
               <Link
                 className={`flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8
                  ${
-                   location.pathname === "/dashboard/dash"
+                   location.pathname === "/dashboard"
                      ? ""
                      : "text-muted-foreground"
                  } `}
-                to="/dashboard/dash"
+                to="/dashboard"
               >
                 <Home className="h-5 w-5" />
                 <span className="sr-only">Dashboard</span>
@@ -43,11 +43,11 @@ export const DashSideBar = () => {
               <Link
                 className={`flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8
                  ${
-                   location.pathname === "/dashboard/recipes"
+                   location.pathname === "/dashboard/user-recipes"
                      ? ""
                      : "text-muted-foreground"
                  } `}
-                to="/dashboard/recipes"
+                to="/dashboard/user-recipes"
               >
                 <LibraryBig className="h-5 w-5" />
                 <span className="sr-only">Recipes</span>

@@ -1,5 +1,5 @@
 import express from "express";
-import routePost from "./routes/post";
+import routeRecipes from "./routes/recipes";
 import routeGoogleAuth from "./routes/googleAuth";
 import passport from "passport";
 require("dotenv").config();
@@ -23,7 +23,7 @@ app.use(
   })
 );
 
-app.use("/post", routePost);
+app.use("/recipes", routeRecipes);
 app.use("/", routeGoogleAuth);
 
 app.listen(port, () => {

@@ -5,8 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "./ui/button";
-import product from "../assets/img/food.png";
+import { Button } from "../ui/button";
+import product from "../../assets/img/food.png";
 
 export const Recipes = () => {
   return (
