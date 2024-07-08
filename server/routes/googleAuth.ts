@@ -1,23 +1,13 @@
 import express, { Request, Response, Router } from "express";
 import passport, { session } from "passport";
 import prisma from "../prisma/prisma";
+import { isLoggedIn } from "../middleware/authMiddleware";
+
 const router = Router();
 const clientUrl =
   process.env.NODE_ENV === "production"
     ? process.env.CLIENT_URL_PROD
     : process.env.CLIENT_URL_DEV;
-
-const isLoggedIn = (
-  req: Request,
-  res: Response,
-  next: express.NextFunction
-) => {
-  if (req.user) {
-    return next();
-  } else {
-    res.sendStatus(401);
-  }
-};
 
 router.get(
   "/api/user",
@@ -57,6 +47,7 @@ router.get(
 
 router.post(
   "/api/logout",
+  isLoggedIn,
   (req: express.Request, res: express.Response, next) => {
     try {
       res
