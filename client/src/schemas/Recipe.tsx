@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const postSchema = z.object({
+const recipeSchema = z.object({
   title: z.string(),
   userId: z.string(),
   url: z.string().nullable(),
@@ -13,4 +13,4 @@ const postSchema = z.object({
   categories: z.array(z.string()),
 });
 
-export default postSchema;
+export type Post = z.infer<typeof recipeSchema>;
