@@ -25,7 +25,24 @@ router.post(
     try {
       const recipe = req.body;
       const newPost = await prisma.post.create({
-        data: recipe,
+        data: {
+          title: recipe.title,
+          image: recipe.image,
+          user: {
+            connect: { id: recipe.userId },
+          },
+          url: recipe.url,
+          description: recipe.description,
+          ingredients: recipe.ingredients,
+          approach: recipe.approach,
+          preperationTime: recipe.preperationTime,
+          tips: recipe.tips,
+          categories: {
+            connect: recipe.categories.map((categoryId: string) => ({
+              id: categoryId,
+            })),
+          },
+        },
       });
       res.json(newPost);
     } catch (error) {
@@ -34,7 +51,5 @@ router.post(
     }
   }
 );
-
-// Modify a post
 
 export default router;
