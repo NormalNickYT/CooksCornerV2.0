@@ -1,17 +1,16 @@
-interface Post {
-  id: number;
-  name: string;
-  category: string;
-  url: string;
-  image: string;
-  description: string;
-  ingredients: string[];
-  approach: string;
-  // Hier naar kijken
-  preperationTime: number;
-  createdAt: number;
+import { z } from "zod";
 
-  tips: string;
-}
+const postSchema = z.object({
+  title: z.string(),
+  userId: z.string(),
+  url: z.string().nullable(),
+  image: z.string(),
+  description: z.string().nullable(),
+  ingredients: z.array(z.string()),
+  approach: z.string().nullable(),
+  preperationTime: z.date().nullable(),
+  tips: z.string().nullable(),
+  categories: z.array(z.string()),
+});
 
-export default Post;
+export default postSchema;
