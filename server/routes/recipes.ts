@@ -6,22 +6,27 @@ const prisma = new PrismaClient();
 const router = Router();
 
 // Get all user posts
-router.get("/recipes", isLoggedIn, async (req: Request, res: Response) => {
+router.get("/api/recipes", isLoggedIn, async (req: Request, res: Response) => {
   const postList = await prisma.post.findMany();
   res.json(postList);
 });
 
 // Get all specific user posts based on id
-router.get("/userRecipes", isLoggedIn, async (req: Request, res: Response) => {
-  const userPosts = await prisma.post.findMany();
-  res.json(userPosts);
-});
+router.get(
+  "/api/userRecipes",
+  isLoggedIn,
+  async (req: Request, res: Response) => {
+    const userPosts = await prisma.post.findMany();
+    res.json(userPosts);
+  }
+);
 
 // Create Post
 router.post(
-  "/createRecipe",
+  "/api/createRecipe",
   isLoggedIn,
   async (req: Request, res: Response) => {
+    console.log("werkt de endpoint wel? ");
     try {
       const recipe = req.body;
       const newPost = await prisma.post.create({
@@ -37,6 +42,7 @@ router.post(
           approach: recipe.approach,
           preperationTime: recipe.preperationTime,
           tips: recipe.tips,
+          status: recipe.status,
           categories: {
             connect: recipe.categories.map((categoryId: string) => ({
               id: categoryId,

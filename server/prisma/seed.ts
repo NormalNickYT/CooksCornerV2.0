@@ -1,41 +1,45 @@
 import prisma from "./prisma";
 
 async function Seed() {
-
   const category1 = await prisma.category.create({
     data: {
-      title: 'Lunch',
+      title: "Lunch",
     },
   });
 
   const category2 = await prisma.category.create({
     data: {
-      title: 'Breakfast',
+      title: "Breakfast",
     },
   });
 
-  // Seed some test data 
+  // Seed some test data
   const user1 = await prisma.user.upsert({
-    where: { email: 'test@gmail.com' },
+    where: { email: "test@gmail.com" },
     update: {},
     create: {
-      name: 'Test',
-      email: 'test@gmail.com',
-      username: 'Test',
-      avatar: 'https://cdn.pixabay.com/photo/2015/02/13/00/43/apples-634572_1280.jpg',
-      googleId: '1234567890',
-      password: '',
+      name: "Test",
+      email: "test@gmail.com",
+      username: "Test",
+      avatar:
+        "https://cdn.pixabay.com/photo/2015/02/13/00/43/apples-634572_1280.jpg",
+      googleId: "1234567890",
+      password: "",
       posts: {
-        create: [{
-          title: 'Tacos Gerecht',
-          url: 'https://www.prisma.io/nextjs',
-          image: 'https://cdn.pixabay.com/photo/2015/02/13/00/43/apples-634572_1280.jpg',
-          categories: {
-            connect: [{ id: category1.id }, { id: category2.id }],
+        create: [
+          {
+            title: "Tacos Gerecht",
+            url: "https://www.prisma.io/nextjs",
+            image:
+              "https://cdn.pixabay.com/photo/2015/02/13/00/43/apples-634572_1280.jpg",
+            categories: {
+              connect: [{ id: category1.id }, { id: category2.id }],
+            },
+            createdAt: new Date(),
+            status: "Active",
           },
-          createdAt: new Date(),
-        }],
-    },
+        ],
+      },
     },
   });
 }
@@ -48,4 +52,4 @@ Seed()
     console.error(e);
     await prisma.$disconnect();
     process.exit(1);
-});
+  });

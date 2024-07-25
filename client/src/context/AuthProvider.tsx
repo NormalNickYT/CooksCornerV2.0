@@ -1,3 +1,4 @@
+import SpinnerLoader from "@/components/SpinnerLoader";
 import User from "@/schemas/User";
 import axios from "axios";
 import {
@@ -73,6 +74,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  if (loading) {
+    return <SpinnerLoader />;
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -91,6 +96,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export default AuthProvider;
 
-export const useAuth = () => { 
+export const useAuth = () => {
   return useContext(AuthContext);
 };
