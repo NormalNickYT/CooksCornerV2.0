@@ -4,6 +4,6 @@ export const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
   if (req.user) {
     return next();
   } else {
-    res.sendStatus(401);
+    res.status(401).send("Invalid Session");
   }
 };
