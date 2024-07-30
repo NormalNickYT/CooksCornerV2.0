@@ -40,9 +40,16 @@ router.get(
 router.get(
   "/api/google/callback",
   passport.authenticate("google", {
-    successRedirect: `${clientUrl}/dashboard?tab=dash`,
     failureRedirect: `${clientUrl}/login`,
-  })
+  }),
+  (req: Request, res: Response) => {
+    try {
+      res.redirect(`${clientUrl}/dashboard?tab=dash`);
+    } catch (error) {
+      console.error("Error during Google OAuth callback:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  }
 );
 
 router.post(
@@ -59,5 +66,4 @@ router.post(
     }
   }
 );
-
 export default router;
