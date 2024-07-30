@@ -6,7 +6,7 @@ type Props = {
 
 export const DashBoardLayout = ({ children }: Props) => {
   return (
-    <div className="flex min-h-screen w-full flex-col bg-muted/40 dark:bg-dark-background">
+    <div className="flex min-h-screen w-full flex-col dark:bg-dark-background">
       <DashSideBar />
       <div className="w-full">{children}</div>
     </div>

@@ -18,16 +18,14 @@ export const theme = {
   },
   extend: {
     fontFamily: {
-      sans: ["Inter var", "ui-sans-serif", "system-ui", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", 'sans-serif'],
+      poppins: ["Montserrat", "sans-serif"],
     },
     colors: {
       light: {
         text: "hsl(var(--foreground))",
         background: "hsl(var(--background))",
         primary: "hsl(var(--primary))",
-        primary20: "hsl(359, 100%, 80%, 20%)",
         secondary: "hsl(var(--secondary))",
-        secondary30: "hsl(342, 66%, 67%, 30%)",
         accent: "hsl(var(--accent))",
       },
       dark: {
@@ -35,9 +33,7 @@ export const theme = {
         text5: "hsl(303, 77%, 95%, 5%)",
         background: "hsl(var(--background))",
         primary: "hsl(var(--primary))",
-        primary5: "hsl(359, 100%, 20%, 5%)",
         secondary: "hsl(var(--secondary))",
-        secondary30: "hsl(342, 66%, 33%, 30%)",
         accent: "hsl(var(--accent))",
         input: "hsl(var(--input))",
       },

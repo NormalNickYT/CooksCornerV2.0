@@ -6,8 +6,6 @@ import {
 } from "@/schemas/Recipe";
 import axios from "axios";
 
-// const BASE_URL = process.env.BASE_URL;
-
 export const getUserRecipes = async () => {
   try {
     const response = await axios.get(`/posts`);
@@ -21,9 +19,12 @@ export const getUserRecipes = async () => {
 export const createManualRecipe = async (data: ManualRecipe) => {
   try {
     manualRecipeSchema.parse(data);
-
-    console.log("Dit is de data: ", data);
-    const response = await axios.post(`/recipes/api/createRecipe`, data);
+    const response = await axios.post(`/api/recipes/createrecipe`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
     return response.data;
   } catch (error) {
     console.error("Error creating recipe:", error);

@@ -16,7 +16,7 @@ export const DashSideBar = () => {
   }, [location.pathname]);
 
   return (
-    <aside className="fixed inset-y-30 left-0 z-10 hidden w-14 flex-col border-r sm:flex h-full ">
+    <aside className="absolute inset-y-30 left-0 z-10 hidden w-14 flex-col border-r sm:flex h-full ">
       <nav className="flex flex-col items-center gap-4 px- sm:py-5">
         <TooltipProvider>
           <Tooltip>

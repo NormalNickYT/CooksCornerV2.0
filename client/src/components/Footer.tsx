@@ -1,8 +1,8 @@
 export const Footer = () => {
   return (
     <>
-      <div className="bg-light-background">
-        <div className="max-w-screen-lg px-4 sm:px-6 sm:grid md:grid-cols-3 sm:grid-cols-2 mx-auto">
+      <div className="dark:bg-dark-background">
+        <div className="max-w-screen-lg px-4 sm:px-6 sm:grid md:grid-cols-3 sm:grid-cols-2 mx-auto ">
           <div className="p-5">
             <h3 className="font-bold text-xl text-dark-accent ">CooksCorner</h3>
           </div>
@@ -36,7 +36,7 @@ export const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="bg-light-background pt-2">
+      <div className="pt-2 dark:bg-dark-background">
         <div className="flex pb-5 px-3 m-auto pt-5 border-t text-sm flex-col max-w-screen-lg items-center">
           <div className="md:flex-auto md:flex-row-reverse mt-2 flex-row flex">
             {/* <a href="/#" className="w-6 mx-1">

@@ -3,11 +3,20 @@ import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import Switcher from "./ui/switcher";
 import { useAuth } from "@/context/AuthProvider";
-import { CircleUserRound } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { Button } from "./ui/button";
+import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 
 const Navbar = () => {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
   const navigate = useNavigate();
 
   const handleNav = () => {
@@ -25,7 +34,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="md:px-20 sm:px-20 top-0 z-50 backdrop-blur-lg text-text bg-light-background dark:bg-dark-background  ">
+    <nav className="md:px-20 sm:px-20 top-0 z-50 backdrop-blur-lg text-text dark:bg-dark-background border-b">
       <div className="px-4 mx-auto lg:text-sm">
         <div className="flex justify-between items-center">
           <div className="flex items-center flex-shrink-0">
@@ -71,9 +80,31 @@ const Navbar = () => {
                 >
                   Sign Out
                 </a>
-                <Link to={"/dashboard"}>
-                  <CircleUserRound className="h-5 w-5" />
-                </Link>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="overflow-hidden rounded-full"
+                    >
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          src={user!.avatar}
+                          referrerPolicy="no-referrer"
+                        />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>Settings</DropdownMenuItem>
+                    <DropdownMenuItem>Support</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>Logout</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </>
             ) : (
               <>

@@ -4,65 +4,69 @@
 
 @layer base {
   :root {
-    --background: 225 30.8% 94.9%;
-    --foreground: 297.5 66.7% 7.1%;
+    --background: 163 47% 97%;
+    --foreground: 163 100% 6%;
 
-    --card: 270 2.6% 84.7%;
-    --card-foreground: 222.2 84% 4.9%;
+    --muted: 163 47% 97%;
+    --muted-foreground: 159 7.6% 53.4%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 159 49.8% 4.42%;
+    --popover-foreground: 159 7.6% 96.7%;
 
-    --primary: 358.8 100% 80%;
-    --primary-foreground: 210 40% 98%;
+    --card: 163 47% 97%;
+    --card-foreground: 163 100% 6%;
 
-    --secondary: 341.6 65.7% 66.9%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --border: 220 13% 91%;
+    --input: 159 38% 90%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --primary: 159 37% 34%;
+    --primary-foreground: 159 7.6% 96.7%;
 
-    --accent: 6 73.9% 45.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --secondary: 159 37% 10%;
+    --secondary-foreground: 159 7.6% 96.7%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --accent: 205 99% 56%;
+    --accent-foreground: 159 7.6% 96.7%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 159 7.6% 96.7%;
 
-    --radius: 0.5rem;
+    --ring: 159 76% 34%;
+
+    --radius: 0.7rem;
   }
 
   .dark {
-    --background: 220 5.5% 10.8%;
-    --foreground: 303 76.9% 94.9%;
+    --background: 159 49.4% 2.72%;
+    --foreground: 159 7.6% 96.7%;
 
-    --card: 303, 77%, 95%, 5%;
-    --card-foreground: 210 40% 98%;
+    --muted: 159 38% 10.200000000000001%;
+    --muted-foreground: 159 7.6% 53.4%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 159 49.8% 4.42%;
+    --popover-foreground: 159 7.6% 96.7%;
 
-    --primary: 358.8 100% 20%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --card: 159 49.8% 5.42%;
+    --card-foreground: 159 7.6% 96.7%;
 
-    --secondary: 341.8 65.9% 33.3%;
-    --secondary-foreground: 210 40% 98%;
+    --border: 220 13% 25%;
+    --input: 159 38% 8.200000000000001%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --primary: 159 76% 34%;
+    --primary-foreground: 159 7.6% 96.7%;
 
-    --accent: 5.9 74.1% 54.5%;
-    --accent-foreground: 210 40% 98%;
+    --secondary: 159 38% 10.200000000000001%;
+    --secondary-foreground: 159 7.6% 96.7%;
+
+    --accent: 205 99% 56%;
+    --accent-foreground: 159 7.6% 96.7%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 159 7.6% 96.7%;
 
-    --border: 260 3.8% 20.5%;
-    --input: 260 3.8% 15.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 159 76% 34%;
+
+    --radius: 0.7rem;
   }
 }
 
@@ -76,7 +80,12 @@
     @apply text-foreground;
   }
 
+  html {
+    font-family: "Montserrat";
+  }
+
 }
+
 
 @layer utilities {
   .underline-wavy-hotpink {
@@ -89,7 +98,7 @@
     bottom: -2px;
     width: 0;
     height: 2px;
-    @apply bg-dark-accent; /* Gebruik de kleur van primary als achtergrondkleur */
+    @apply bg-dark-accent;
     transition: width 0.3s ease;
   }
   .underline-wavy-hotpink:hover::after {
