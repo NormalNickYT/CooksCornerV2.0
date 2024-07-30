@@ -38,7 +38,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PlusCircle, Upload, Trash2 } from "lucide-react";
+import { PlusCircle, Trash2 } from "lucide-react";
+import FileUpload from "../ui/file-upload";
 
 const RecipeForm = () => {
   const [formType, setFormType] = useState<"manual" | "url">("manual");
@@ -137,7 +138,7 @@ const RecipeForm = () => {
 
   return (
     <div>
-      <Select onValueChange={handleFormTypeChange}>
+      <Select defaultValue={formType} onValueChange={handleFormTypeChange}>
         <SelectTrigger>
           <SelectValue placeholder="Select Method" />
         </SelectTrigger>
@@ -451,31 +452,17 @@ const RecipeForm = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-2">
-                    <img
-                      alt="Product image"
-                      className="aspect-square w-full rounded-md object-cover"
-                      height="300"
-                      src={
-                        selectedImage
-                          ? URL.createObjectURL(selectedImage)
-                          : "https://via.placeholder.com/300"
-                      }
-                      width="300"
-                    />
-                    <div className="grid grid-cols-3 gap-2">
-                      <label className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed cursor-pointer">
-                        <Upload className="h-4 w-4 text-muted-foreground" />
-                        <span className="sr-only">Upload</span>
-                        <input
-                          id="image"
-                          type="file"
-                          className="hidden"
-                          accept="image/*"
-                          {...registerManual("image")}
+                    <Controller
+                      control={control}
+                      name="image"
+                      render={({ field }) => (
+                        <FileUpload
+                          {...field}
+                          value={selectedImage}
                           onChange={handleImageChange}
                         />
-                      </label>
-                    </div>
+                      )}
+                    />
                     {errorsManual.image && (
                       <p className="text-xs italic text-red-500 mt-2">
                         {errorsManual.image.message}
