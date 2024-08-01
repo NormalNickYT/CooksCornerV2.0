@@ -40,8 +40,13 @@ import {
 } from "@/components/ui/table";
 import { PlusCircle, Trash2 } from "lucide-react";
 import FileUpload from "../ui/file-upload";
+import { useAuth } from "@/context/AuthProvider";
 
-const RecipeForm = () => {
+type RecipeFormProps = {
+  onRecipePosted: () => void;
+};
+
+const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
   const [formType, setFormType] = useState<"manual" | "url">("manual");
   const [ingredients, setIngredients] = useState([
     { name: "", amount: "", unit: "" },
@@ -49,6 +54,7 @@ const RecipeForm = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [status, setStatus] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const { user } = useAuth();
 
   const categoriesList: Option[] = [
     { value: "Breakfast", label: "Breakfast" },
@@ -104,11 +110,25 @@ const RecipeForm = () => {
   };
 
   const handleManualSubmit: SubmitHandler<ManualRecipe> = async (data) => {
-    const completeData = { ...data, status, selectedCategories };
+    console.log(data.image);
+
+    if (!user?.id) {
+      console.error("User ID is missing");
+      return;
+    }
+
+    const completeData = {
+      ...data,
+      status,
+      selectedCategories,
+      userId: String(user.id),
+    };
+
     console.log("Testing", completeData);
 
     try {
       await createManualRecipe(completeData);
+      onRecipePosted();
     } catch (error) {
       console.error("Error creating recipe:", error);
     }
@@ -125,10 +145,10 @@ const RecipeForm = () => {
 
   const convertToOptions = (
     selectedValues: string[],
-    optionsList: Option[]
+    optionsList: Option[],
   ): Option[] => {
     return optionsList.filter((option) =>
-      selectedValues.includes(option.value)
+      selectedValues.includes(option.value),
     );
   };
 
@@ -157,8 +177,10 @@ const RecipeForm = () => {
             <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
               <Card>
                 <CardHeader>
-                  <CardTitle>Recipe Details</CardTitle>
-                  <CardDescription>Fill in your recipe details</CardDescription>
+                  <CardTitle>Recept Informatie</CardTitle>
+                  <CardDescription>
+                    Vul de details in van het recept
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-6">
@@ -166,6 +188,7 @@ const RecipeForm = () => {
                       <Label htmlFor="title">Title*</Label>
                       <Input
                         id="title"
+                        placeholder="Geef je recept een titel"
                         {...registerManual("title", {
                           required: "Title is required",
                         })}
@@ -177,9 +200,12 @@ const RecipeForm = () => {
                       )}
                     </div>
                     <div className="grid gap-3">
-                      <Label htmlFor="description">Description</Label>
+                      <Label htmlFor="description">
+                        Description (optioneel)
+                      </Label>
                       <Textarea
                         id="description"
+                        placeholder="Share je story over het recept en wat het speciaal maakt"
                         {...registerManual("description")}
                         className="min-h-32"
                       />
@@ -190,9 +216,10 @@ const RecipeForm = () => {
                       )}
                     </div>
                     <div className="grid gap-3">
-                      <Label htmlFor="approach">Werkwijze</Label>
+                      <Label htmlFor="approach">Werkwijze*</Label>
                       <Textarea
                         id="approach"
+                        placeholder="Leg uit hoe u uw recept moet maken, inclusief oventemperaturen, bak- of bereidingstijden en pangroottes, enz. Gebruik optionele kopteksten om de verschillende delen van het recept te ordenen (d.w.z. Voorbereiden, Bakken, Versieren)."
                         {...registerManual("approach")}
                         className="min-h-32"
                       />
@@ -225,7 +252,7 @@ const RecipeForm = () => {
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Ingredienten</CardTitle>
+                  <CardTitle>Ingredienten*</CardTitle>
                   <CardDescription>Vul de ingredienten in</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -250,7 +277,7 @@ const RecipeForm = () => {
                             <Input
                               id={`ingredient-name-${index}`}
                               {...registerManual(
-                                `ingredients.${index}.name` as keyof ManualRecipe
+                                `ingredients.${index}.name` as keyof ManualRecipe,
                               )}
                               defaultValue={ingredient.name}
                             />
@@ -272,7 +299,7 @@ const RecipeForm = () => {
                               type="number"
                               {...registerManual(
                                 `ingredients.${index}.amount` as keyof ManualRecipe,
-                                { valueAsNumber: true }
+                                { valueAsNumber: true },
                               )}
                               defaultValue={ingredient.amount}
                             />
@@ -295,7 +322,7 @@ const RecipeForm = () => {
                             <Input
                               id={`ingredient-unit-${index}`}
                               {...registerManual(
-                                `ingredients.${index}.unit` as keyof ManualRecipe
+                                `ingredients.${index}.unit` as keyof ManualRecipe,
                               )}
                               defaultValue={ingredient.unit}
                             />
@@ -331,7 +358,10 @@ const RecipeForm = () => {
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Je zou het maar (w)eten</CardTitle>
+                  <CardTitle>
+                    Je zou het maar (w)eten{" "}
+                    <span className="text-sm"> (optioneel) </span>{" "}
+                  </CardTitle>
                   <CardDescription>
                     Vul hier je tips in voor dit recept
                   </CardDescription>
@@ -405,14 +435,14 @@ const RecipeForm = () => {
                           control={control}
                           render={({ field }) => {
                             const selectedValues: string[] = Array.isArray(
-                              field.value
+                              field.value,
                             )
                               ? field.value
                               : [];
 
                             const convertedOptions = convertToOptions(
                               selectedValues,
-                              categoriesList
+                              categoriesList,
                             );
 
                             return (
@@ -472,14 +502,14 @@ const RecipeForm = () => {
                 </CardContent>
               </Card>
             </div>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-dark-primary text-lg font-bold text-white content-right"
+            >
+              {isSubmitting ? "Loading..." : "Add Recipe"}
+            </Button>
           </div>
-          <button
-            className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline"
-            type="submit"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Loading..." : "Submit"}
-          </button>
         </form>
       ) : (
         <form onSubmit={handleSubmitURL(handleURLSubmit)}>
@@ -487,7 +517,7 @@ const RecipeForm = () => {
             <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
               <Card>
                 <CardHeader>
-                  <CardTitle>Recipe Details</CardTitle>
+                  <CardTitle>Recept Informatie</CardTitle>
                   <CardDescription>Fill in your recipe details</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -542,12 +572,13 @@ const RecipeForm = () => {
               </Card>
             </div>
           </div>
-          <button
-            className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline"
-            type="submit"
-          >
-            Submit
-          </button>
+
+          <Button type="submit" variant="outline" size="sm">
+            Discard
+          </Button>
+          <Button variant="outline" size="sm">
+            Save Product
+          </Button>
         </form>
       )}
     </div>

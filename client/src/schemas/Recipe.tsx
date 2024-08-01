@@ -18,6 +18,7 @@ export const manualRecipeSchema = z.object({
   categories: z.string().array().min(1, "At least one category is required"),
   status: z.string().min(1, "Status is required"),
   image: z.instanceof(File, { message: "Image is required" }),
+  userId: z.string().optional(),
 });
 
 export const urlRecipeSchema = z.object({

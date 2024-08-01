@@ -19,12 +19,34 @@ export const getUserRecipes = async () => {
 export const createManualRecipe = async (data: ManualRecipe) => {
   try {
     manualRecipeSchema.parse(data);
-    const response = await axios.post(`/api/recipes/createrecipe`, data, {
+
+    const formData = new FormData();
+
+    if (data.image) {
+      formData.append("image", data.image);
+    }
+
+    const documentJson = {
+      title: data.title,
+      description: data.description,
+      ingredients: data.ingredients,
+      approach: data.approach,
+      preparationTime: data.preparationTime,
+      tips: data.tips,
+      status: data.status,
+      categories: data.categories,
+      userId: data.userId,
+    };
+
+    formData.append("document", JSON.stringify(documentJson));
+
+    const response = await axios.post(`/api/recipes/createrecipe`, formData, {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
       withCredentials: true,
     });
+
     return response.data;
   } catch (error) {
     console.error("Error creating recipe:", error);
