@@ -16,67 +16,68 @@ export const DashSideBar = () => {
   }, [location.pathname]);
 
   return (
-    <aside className="absolute inset-y-30 left-0 z-10 hidden w-14 flex-col border-r sm:flex h-full ">
-      <nav className="flex flex-col items-center gap-4 px- sm:py-5">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                className={`flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                 ${
-                   location.pathname === "/dashboard"
-                     ? ""
-                     : "text-muted-foreground"
-                 } `}
-                to="/dashboard"
-              >
-                <Home className="h-5 w-5" />
-                <span className="sr-only">Dashboard</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Dashboard</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                className={`flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                 ${
-                   location.pathname === "/dashboard/user-recipes"
-                     ? ""
-                     : "text-muted-foreground"
-                 } `}
-                to="/dashboard/user-recipes"
-              >
-                <LibraryBig className="h-5 w-5" />
-                <span className="sr-only">Recipes</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Recipes</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                className={`flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8
-                   ${
-                     location.pathname === "/dashboard/favorites"
-                       ? ""
-                       : "text-muted-foreground"
-                   } `}
-                to={"/dashboard/favorites"}
-              >
-                <Star className="h-5 w-5" />
-                <span className="sr-only">Favorites</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Favorites</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </nav>
-      <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5"></nav>
-    </aside>
+    <>
+      <aside className="fixed left-0 w-40 hidden flex-col border-r h-full bg-white dark:bg-dark-background sm:flex">
+        <nav className="flex flex-col py-5">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  className={`flex items-center p-3 rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground ${
+                    location.pathname === "/dashboard"
+                      ? ""
+                      : "text-muted-foreground"
+                  }`}
+                  to="/dashboard"
+                >
+                  <Home className="h-5 w-5" />
+                  <span className="ml-3 text-md">Dashboard</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Dashboard</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  className={`flex items-center p-3 rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground ${
+                    location.pathname === "/dashboard/user-recipes"
+                      ? ""
+                      : "text-muted-foreground"
+                  }`}
+                  to="/dashboard/user-recipes"
+                >
+                  <LibraryBig className="h-5 w-5" />
+                  <span className="ml-3 text-md">Recipes</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Recipes</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  className={`flex items-center p-3 rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground ${
+                    location.pathname === "/dashboard/favorites"
+                      ? ""
+                      : "text-muted-foreground"
+                  }`}
+                  to="/dashboard/favorites"
+                >
+                  <Star className="h-5 w-5" />
+                  <span className="ml-3 text-md">Favorites</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Favorites</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </nav>
+        <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5"></nav>
+      </aside>
+    </>
   );
 };

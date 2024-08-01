@@ -41,7 +41,9 @@ export function Dashboard() {
             </Avatar>
           </div>
           <div className="ml-4 md:ml-8">
-            <h1 className="text-3xl md:text-4xl">Welcome {user.username}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold">
+              Welcome <span className="text-dark-accent">{user.username}</span>
+            </h1>
             <h2 className="text-lg md:text-xl">This is your dashboard</h2>
           </div>
         </div>

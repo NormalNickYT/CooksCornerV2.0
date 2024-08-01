@@ -1,13 +1,16 @@
+import { Footer } from "@/components/Footer";
+import Navbar from "@/components/Navbar";
+
 type Props = {
   children: React.ReactNode;
 };
 
 export const Layout = ({ children }: Props) => {
   return (
-    <div>
-      <div className="min-h-screen">
-        <div className="w-full">{children}</div>
-      </div>
+    <div className="flex flex-col min-h-screen dark:bg-dark-background">
+      <Navbar />
+      <main className="flex-1 w-full">{children}</main>
+      <Footer />
     </div>
   );
 };

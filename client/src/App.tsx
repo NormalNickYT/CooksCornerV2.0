@@ -1,4 +1,3 @@
-import Navbar from "./components/Navbar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -6,7 +5,6 @@ import Dashboard from "./pages/profile/Dashboard";
 import { Layout } from "./layouts/layout";
 import AuthProvider from "./context/AuthProvider";
 import PrivateRoute from "./components/PrivateRoutes";
-import { Footer } from "./components/Footer";
 import { DashBoardLayout } from "./layouts/DashboardLayout";
 import UserRecipes from "./pages/profile/UserRecipes";
 import AddRecipe from "./pages/profile/AddRecipe";
@@ -16,7 +14,6 @@ function App() {
     <>
       <BrowserRouter>
         <AuthProvider>
-          <Navbar />
           <Routes>
             <Route
               path="/"
@@ -69,7 +66,6 @@ function App() {
               />
             </Route>
           </Routes>
-          <Footer />
         </AuthProvider>
       </BrowserRouter>
     </>
