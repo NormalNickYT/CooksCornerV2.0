@@ -21,26 +21,37 @@ model User {
 }
 
 model Post {
-  id              String     @id @unique @default(cuid())
+  id              String       @id @unique @default(cuid())
   title           String
-  userId          String     @unique
-  user            User       @relation(fields: [userId], references: [id])
-  categories      Category[]
+  userId          String
+  user            User         @relation(fields: [userId], references: [id])
+  categories      Category[]   @relation("PostCategories")
   url             String?
   image           String
-  createdAt       DateTime   @default(now())
+  createdAt       DateTime     @default(now())
   description     String?
-  ingredients     String[]
-  approach        String?
-  preperationTime DateTime?
+  ingredients     Ingredient[] @relation("PostIngredients")
   tips            String?
   status          String
+  preparationTime Int
+  approach        String
 
   @@index([userId])
 }
 
+model Ingredient {
+  id     String  @id @default(cuid())
+  name   String
+  amount Int
+  unit   String
+  post   Post?   @relation("PostIngredients", fields: [postId], references: [id])
+  postId String?
+
+  @@index([postId])
+}
+
 model Category {
   id    String @id @unique @default(cuid())
-  title String
-  posts Post[]
+  title String @unique
+  posts Post[] @relation("PostCategories")
 }

@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import { isLoggedIn } from "../middleware/authMiddleware";
+import upload from "../middleware/multerStorage";
 
 const prisma = new PrismaClient();
 const router = Router();
@@ -29,42 +30,64 @@ router.get(
 router.post(
   "/api/recipes/createrecipe",
   isLoggedIn,
+  upload.single("image"),
   async (req: Request, res: Response) => {
     if (!req.user) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-
-    console.log("werkt de endpoint wel? ");
-
+    console.log("testing");
     console.log(req.body);
-    // try {
-    //   const recipe = req.body;
-    //   const newPost = await prisma.post.create({
-    //     data: {
-    //       title: recipe.title,
-    //       image: recipe.image,
-    //       user: {
-    //         connect: { id: recipe.userId },
-    //       },
-    //       url: recipe.url,
-    //       description: recipe.description,
-    //       ingredients: recipe.ingredients,
-    //       approach: recipe.approach,
-    //       preperationTime: recipe.preperationTime,
-    //       tips: recipe.tips,
-    //       status: recipe.status,
-    //       categories: {
-    //         connect: recipe.categories.map((categoryId: string) => ({
-    //           id: categoryId,
-    //         })),
-    //       },
-    //     },
-    //   });
-    //   res.json(newPost);
-    // } catch (error) {
-    //   console.error(error);
-    //   res.status(500).json({ error: "Internal Server Error" });
-    // }
+    try {
+      const { document } = req.body;
+      const parsedDocument = JSON.parse(document);
+
+      const {
+        title,
+        description,
+        ingredients,
+        approach,
+        preparationTime,
+        tips,
+        status,
+        categories,
+        userId,
+      } = parsedDocument;
+
+      const image = req.file?.path || "";
+
+      const newPost = await prisma.post.create({
+        data: {
+          title,
+          image,
+          user: {
+            connect: { id: userId },
+          },
+          description,
+          ingredients: {
+            create: ingredients.map((ingredient: any) => ({
+              name: ingredient.name,
+              amount: ingredient.amount,
+              unit: ingredient.unit,
+            })),
+          },
+          approach,
+          preparationTime: preparationTime,
+          tips,
+          status,
+          categories: {
+            connectOrCreate: categories.map((category: any) => ({
+              where: { title: category },
+              create: { title: category }, 
+            })),
+          },
+        },
+      });
+
+      res.json(newPost);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
 );
 

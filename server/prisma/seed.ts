@@ -1,19 +1,25 @@
 import prisma from "./prisma";
 
 async function Seed() {
-  const category1 = await prisma.category.create({
-    data: {
-      title: "Lunch",
-    },
+  const categories = ["Lunch", "Breakfast"];
+
+  const categoryPromises = categories.map(async (title) => {
+    const existingCategory = await prisma.category.findFirst({
+      where: { title }
+    });
+
+    if (existingCategory) {
+      return existingCategory;
+    } else {
+      return await prisma.category.create({
+        data: { title }
+      });
+    }
   });
 
-  const category2 = await prisma.category.create({
-    data: {
-      title: "Breakfast",
-    },
-  });
+  const createdCategories = await Promise.all(categoryPromises);
+  const categoryIds = createdCategories.map((category) => category.id);
 
-  // Seed some test data
   const user1 = await prisma.user.upsert({
     where: { email: "test@gmail.com" },
     update: {},
@@ -33,10 +39,12 @@ async function Seed() {
             image:
               "https://cdn.pixabay.com/photo/2015/02/13/00/43/apples-634572_1280.jpg",
             categories: {
-              connect: [{ id: category1.id }, { id: category2.id }],
+                connect: categoryIds.map((id) => ({ id })), 
             },
             createdAt: new Date(),
             status: "Active",
+            preparationTime: 30,
+            approach: "Mix and Cook",
           },
         ],
       },

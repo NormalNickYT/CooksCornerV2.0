@@ -4,6 +4,8 @@ import routeGoogleAuth from "./routes/googleAuth";
 import passport from "passport";
 import { createClient } from "redis";
 import RedisStore from "connect-redis";
+import fs from "fs";
+import path from "path";
 require("dotenv").config();
 require("./middleware/googleStrategy");
 const cors = require("cors");
@@ -15,6 +17,12 @@ const port = 5000;
 let redisClient;
 let redisStore;
 let sessionOptions;
+
+const uploadDir = path.join(__dirname, "uploads");
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
 
 // Configure Redis only if not in development
 if (process.env.NODE_ENV !== "development") {
@@ -70,6 +78,8 @@ app.use(
     credentials: true,
   })
 );
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/", routeRecipes);
 app.use("/", routeGoogleAuth);
