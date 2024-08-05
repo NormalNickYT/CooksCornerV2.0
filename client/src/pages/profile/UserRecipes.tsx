@@ -17,36 +17,38 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { DashHeader } from "../../components/profile/DashHeader";
-import { getUserRecipes } from "@/services/api/recipeService";
+import { deleteRecipe, getUserRecipes } from "@/services/api/recipeService";
 import { useEffect, useState } from "react";
 import UserRecipesList from "@/components/profile/UserRecipeList";
 import { DisplayManualRecipe } from "@/types/displayTypes";
+import CookingWoman from "../../assets/img/cooking-woman.png";
+import { useRecipes } from "@/context/RecipeProvider";
 
 export const UserRecipes = () => {
-  const [resultArray, setResultArray] = useState<DisplayManualRecipe[]>([]);
+  const { recipes, fetchRecipes } = useRecipes();
+  const navigate = useNavigate();
 
-  const handleManualSubmit = async () => {
+  const handleDeleteRecipe = async (recipeId: string) => {
     try {
-      const result = await getUserRecipes();
-      setResultArray(result);
-
-      console.log(result);
-    } catch (error) {
-      console.error("Error creating recipe:", error);
-    }
+      await deleteRecipe(recipeId);
+      fetchRecipes();
+      } catch (error) {
+        console.error("Error deleting recipe:", error);
+      }
   };
 
-  useEffect(() => {
-    handleManualSubmit();
-  }, []);
+  const handleNavigateAddRecipe = () => {
+    navigate('/dashboard/add-recipe');
+  };
 
   return (
     <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14 dark:bg-dark-background">
       <DashHeader />
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 ">
         <Tabs defaultValue="all">
+         {recipes.length > 0 &&  (
           <div className="flex items-center">
             <TabsList className="dark:bg-dark-text5">
               <TabsTrigger value="all">All</TabsTrigger>
@@ -86,19 +88,41 @@ export const UserRecipes = () => {
               </Button>
             </div>
           </div>
+         )}
+        {recipes.length > 0 &&  (
+          <CardHeader>
+           <CardTitle className="font-bold">Recepten</CardTitle>
+           <CardDescription>Beheer je recepten</CardDescription>
+          </CardHeader>
+        )}
           <TabsContent value="all">
             <Card x-chunk="dashboard-06-chunk-0">
-              <CardHeader>
-                <CardTitle>Recipes</CardTitle>
-                <CardDescription>Manage your Recipes</CardDescription>
-              </CardHeader>
+
               <CardContent>
-                <UserRecipesList recipes={resultArray} />
+              <div className="w-full items-center justify-center flex py-16 flex-col space-y-10">
+              {recipes.length === 0 ? (
+                <div className="text-center">
+                  <h2 className="text-lg font-bold">Je hebt nog geen recepten</h2>
+                  <p className="text-sm text-muted-foreground">Voeg een recept toe</p>
+                  <img src={CookingWoman} className="max-w-sm max-h-80 mx-auto object-contain" alt="Food Logo" />
+                  <Button
+                  type="submit"
+                  onClick={handleNavigateAddRecipe}
+                  className="bg-dark-primary text-lg font-bold text-white my-5">
+                  Voeg Recept Toe
+                </Button>
+                </div>
+              ) : (
+                <UserRecipesList recipes={recipes} onDelete={handleDeleteRecipe} />
+              )}
+              </div>
               </CardContent>
               <CardFooter>
+              {recipes.length > 0 && (
                 <div className="text-xs text-muted-foreground">
-                  Showing <strong>1-10</strong> of <strong>32</strong> products
+                  Showing <strong>1-10</strong> of <strong>{recipes.length}</strong> products
                 </div>
+              )}
               </CardFooter>
             </Card>
           </TabsContent>

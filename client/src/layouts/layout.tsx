@@ -10,7 +10,7 @@ export const Layout = ({ children }: Props) => {
     <div className="flex flex-col min-h-screen dark:bg-dark-background">
       <Navbar />
       <main className="flex-1 w-full">{children}</main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };

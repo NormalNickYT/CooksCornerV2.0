@@ -8,12 +8,14 @@ import PrivateRoute from "./components/PrivateRoutes";
 import { DashBoardLayout } from "./layouts/DashboardLayout";
 import UserRecipes from "./pages/profile/UserRecipes";
 import AddRecipe from "./pages/profile/AddRecipe";
+import RecipeProvider from "./context/RecipeProvider";
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <AuthProvider>
+          <RecipeProvider>
           <Routes>
             <Route
               path="/"
@@ -48,14 +50,6 @@ function App() {
                   </DashBoardLayout>
                 }
               />
-              {/* <Route
-                path="/dashboard/favorites"
-                element={
-                  <DashBoardLayout>
-                    <Favorites />
-                  </DashBoardLayout>
-                }
-              /> */}
               <Route
                 path="/dashboard/user-recipes"
                 element={
@@ -66,6 +60,7 @@ function App() {
               />
             </Route>
           </Routes>
+         </RecipeProvider>
         </AuthProvider>
       </BrowserRouter>
     </>

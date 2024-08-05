@@ -4,6 +4,7 @@ export interface DisplayCategory {
 }
 
 export interface DisplayManualRecipe {
+  id: string;
   title: string;
   status: string;
   categories: DisplayCategory[];

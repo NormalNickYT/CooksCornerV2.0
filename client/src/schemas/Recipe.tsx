@@ -6,7 +6,9 @@ export const manualRecipeSchema = z.object({
   ingredients: z
     .array(
       z.object({
-        name: z.string().min(1, "Ingredient name is required"),
+        name: z.string()
+        .min(1, "Ingredient name is required")
+        .regex(/^[a-zA-Z\s]+$/, "Ingredient name should not contain numbers or special characters"),
         amount: z.number().min(1, "Amount is required"),
         unit: z.string().min(1, "Unit is required"),
       })

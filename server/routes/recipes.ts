@@ -111,4 +111,36 @@ router.post(
   }
 );
 
+// Delete a recipe post based on id
+router.delete(
+  "/api/recipes/delete/:id",
+  isLoggedIn,
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    console.log(JSON.stringify(req.user, null, 2));
+
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+      const post = await prisma.post.findUnique({
+        where: { id: id },
+      });
+
+      if (!post) {
+        return res.status(404).json({ error: "Recipe not found" });
+      }
+
+      await prisma.post.delete({ where: { id: id } });
+
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting recipe:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+);
+
 export default router;

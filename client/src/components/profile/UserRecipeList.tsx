@@ -17,12 +17,33 @@ import {
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { DisplayManualRecipe } from "@/types/displayTypes";
+import { deleteRecipe } from "@/services/api/recipeService";
 
 interface UserRecipesListProps {
   recipes: DisplayManualRecipe[];
+  onDelete: (recipeId: string) => void;
 }
 
-const UserRecipesList = ({ recipes }: UserRecipesListProps) => (
+const UserRecipesList = ({ recipes, onDelete }: UserRecipesListProps) => {
+  const handleClickDeleteRecipe = (recipeId: string) => (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    onDelete(recipeId);
+  };
+
+  const getStatusStyles = (status : string) => {
+    switch (status) {
+      case 'active':
+        return 'bg-green-500 text-white';
+      case 'archived':
+        return 'bg-gray-500 text-white';
+      case 'draft':
+        return 'bg-yellow-500 text-white';
+      default:
+        return 'bg-gray-200 text-black';
+    }
+  };
+
+  return (
   <Table>
     <TableHeader>
       <TableRow>
@@ -51,15 +72,17 @@ const UserRecipesList = ({ recipes }: UserRecipesListProps) => (
           </TableCell>
           <TableCell className="font-medium">{recipe.title}</TableCell>
           <TableCell>
-            <Badge variant="outline">{recipe.status}</Badge>
+          <Badge className={getStatusStyles(recipe.status)} variant="outline">
+            {recipe.status}
+          </Badge>
           </TableCell>
           <TableCell className="hidden md:table-cell">
             {recipe.categories.length > 0 ? (
               recipe.categories.map((category) => (
-                <div key={category.id}>{category.title}</div>
+                <Badge className="bg-dark-accent" variant="outline" key = {category.id} >{category.title}</Badge>
               ))
             ) : (
-              <div>No Categories</div>
+              <div>Geen Categorieen</div>
             )}
           </TableCell>
           <TableCell>
@@ -73,7 +96,7 @@ const UserRecipesList = ({ recipes }: UserRecipesListProps) => (
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuItem>Edit</DropdownMenuItem>
-                <DropdownMenuItem>Delete</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleClickDeleteRecipe(recipe.id)}>Delete</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </TableCell>
@@ -81,6 +104,6 @@ const UserRecipesList = ({ recipes }: UserRecipesListProps) => (
       ))}
     </TableBody>
   </Table>
-);
+)};
 
 export default UserRecipesList;

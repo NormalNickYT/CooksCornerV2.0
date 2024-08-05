@@ -49,7 +49,6 @@ passport.use(
 );
 
 passport.serializeUser(function (user: any, cb) {
-  console.log("Serializing user");
   process.nextTick(function () {
     return cb(null, {
       id: user.id,

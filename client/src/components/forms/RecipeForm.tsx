@@ -162,7 +162,7 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
           <SelectItem value="manual">Manual</SelectItem>
           <SelectItem value="url">URL Only</SelectItem>
         </SelectContent>
-      </Select>{" "}
+      </Select>
       <br></br>
       {formType === "manual" ? (
         <form
@@ -181,7 +181,7 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
                 <CardContent>
                   <div className="grid gap-6">
                     <div className="grid gap-3">
-                      <Label htmlFor="title">Title*</Label>
+                      <Label htmlFor="title">Titel*</Label>
                       <Input
                         id="title"
                         placeholder="Geef je recept een titel"
@@ -197,7 +197,7 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
                     </div>
                     <div className="grid gap-3">
                       <Label htmlFor="description">
-                        Description (optioneel)
+                        Beschrijving (optioneel)
                       </Label>
                       <Textarea
                         id="description"
@@ -276,6 +276,7 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
                                 `ingredients.${index}.name` as keyof ManualRecipe,
                               )}
                               defaultValue={ingredient.name}
+                              placeholder="Ui"
                             />
                             {errorsManual.ingredients?.[index]?.name && (
                               <p className="text-xs italic text-red-500 mt-2">
@@ -293,6 +294,7 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
                             <Input
                               id={`ingredient-amount-${index}`}
                               type="number"
+                              placeholder="1"
                               {...registerManual(
                                 `ingredients.${index}.amount` as keyof ManualRecipe,
                                 { valueAsNumber: true },
@@ -321,6 +323,7 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
                                 `ingredients.${index}.unit` as keyof ManualRecipe,
                               )}
                               defaultValue={ingredient.unit}
+                              placeholder="stuks"
                             />
                             {errorsManual.ingredients?.[index]?.unit && (
                               <p className="text-xs italic text-red-500 mt-2">
@@ -348,15 +351,15 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
                     onClick={handleAddIngredient}
                   >
                     <PlusCircle className="h-3.5 w-3.5" />
-                    Add Ingredient
+                    Voeg ingredient toe
                   </Button>
                 </CardFooter>
               </Card>
               <Card>
                 <CardHeader>
                   <CardTitle>
-                    Je zou het maar (w)eten{" "}
-                    <span className="text-sm"> (optioneel) </span>{" "}
+                    Je zou het maar (w)eten
+                    <span className="text-sm"> (optioneel) </span>
                   </CardTitle>
                   <CardDescription>
                     Vul hier je tips in voor dit recept
@@ -365,6 +368,7 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
                     id="tips"
                     {...registerManual("tips")}
                     className="min-h-32"
+                    placeholder="Deel hier je persoonlijke tips en suggesties voor het recept. Bijvoorbeeld: hoe je het gerecht nog lekkerder kunt maken, handige kooktechnieken, of variaties op het recept."
                   />
                   {errorsManual.tips && (
                     <p className="text-xs italic text-red-500 mt-2">
@@ -378,12 +382,12 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
             <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
               <Card>
                 <CardHeader>
-                  <CardTitle>Product Status</CardTitle>
+                  <CardTitle>Recept Status*</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-6">
                     <div className="grid gap-3">
-                      <Label htmlFor="status">Status</Label>
+                      <Label htmlFor="status">Status van je recept</Label>
                       <Controller
                         control={control}
                         name="status"
@@ -395,8 +399,8 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
                               field.onChange(value);
                             }}
                           >
-                            <SelectTrigger aria-label="Select status">
-                              <SelectValue placeholder="Select status" />
+                            <SelectTrigger aria-label="Selecteer status">
+                              <SelectValue placeholder="Selecteer status" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="draft">Draft</SelectItem>
@@ -417,13 +421,13 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Categories</CardTitle>
+                  <CardTitle>Categorieën*</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-6">
                     <div className="grid gap-3">
                       <Label htmlFor="status">
-                        Select multiple categories here
+                        Selecteer meerdere categorieën hier
                       </Label>
                       {
                         <Controller
@@ -451,7 +455,7 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
                                 }}
                                 value={convertedOptions}
                                 defaultOptions={categoriesList}
-                                placeholder="Select Categories"
+                                placeholder="Selecteer categorie(en)*"
                                 emptyIndicator={
                                   <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
                                     no results found.
@@ -473,8 +477,8 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
               </Card>
               <Card className="overflow-hidden">
                 <CardHeader>
-                  <CardTitle>Product Image</CardTitle>
-                  <CardDescription>Your Recipe Image Here</CardDescription>
+                  <CardTitle>Afbeelding Recept*</CardTitle>
+                  <CardDescription>Voeg je afbeelding van het recept hier toe</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-2">
@@ -503,7 +507,7 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
                   disabled={isSubmitting}
                   className="bg-dark-primary text-lg font-bold text-white w-full"
                 >
-                  {isSubmitting ? "Loading..." : "Add Recipe"}
+                  {isSubmitting ? "Laden..." : "Voeg recept toe"}
                 </Button>
               </div>
             </div>
@@ -516,12 +520,12 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
               <Card>
                 <CardHeader>
                   <CardTitle>Recept Informatie</CardTitle>
-                  <CardDescription>Fill in your recipe details</CardDescription>
+                  <CardDescription>Vul je details over het recept hier in</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-6">
                     <div className="grid gap-3">
-                      <Label htmlFor="title">Title</Label>
+                      <Label htmlFor="title">Titel</Label>
                       <Input id="title" {...registerURL("title")} />
                       {errorsURL.title && (
                         <p className="text-xs italic text-red-500 mt-2">

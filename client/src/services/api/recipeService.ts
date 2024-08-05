@@ -62,6 +62,18 @@ export const createManualRecipe = async (data: ManualRecipe) => {
   }
 };
 
+export const deleteRecipe = async (recipeId: string) => {
+  try {
+    await axios.delete(`/api/recipes/delete/${recipeId}`, {
+      withCredentials: true,
+    });
+    console.log('Recipe deleted successfully');
+  } catch (error) {
+    console.error('Error deleting recipe:', error);
+    throw error;
+  }
+}
+
 export const createURLRecipe = async (data: URLRecipe) => {
   try {
     urlRecipeSchema.parse(data);

@@ -13,7 +13,6 @@ export const DashBoardLayout = ({ children }: Props) => {
       <div className="flex-1 flex flex-col ml-0 sm:ml-40">
         <Navbar />
         <main className="flex-1 p-4">{children}</main>
-        <Footer />
       </div>
     </div>
   );

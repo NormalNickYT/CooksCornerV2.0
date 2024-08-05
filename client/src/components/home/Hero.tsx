@@ -9,8 +9,7 @@ export const Hero = () => {
         <h1 className="dark:text-dark-text text-4xl xl:text-6xl tracking-wide dark:text-text font-extrabold">
           The Best Place For
           <span className="bg-gradient-to-r from-dark-accent to-dark-secondary bg-clip-text text-transparent">
-            {" "}
-            WorldWide Recipes{" "}
+            WorldWide Recipes
           </span>
         </h1>
         <p className="dark:text-dark-text max-w-xl leading-relaxed sm:mx-auto lg:ml-0">
