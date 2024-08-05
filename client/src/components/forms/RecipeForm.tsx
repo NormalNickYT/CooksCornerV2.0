@@ -110,8 +110,6 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
   };
 
   const handleManualSubmit: SubmitHandler<ManualRecipe> = async (data) => {
-    console.log(data.image);
-
     if (!user?.id) {
       console.error("User ID is missing");
       return;
@@ -123,8 +121,6 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
       selectedCategories,
       userId: String(user.id),
     };
-
-    console.log("Testing", completeData);
 
     try {
       await createManualRecipe(completeData);
@@ -501,14 +497,16 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
                   </div>
                 </CardContent>
               </Card>
+              <div className="flex justify-end mt-4">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="bg-dark-primary text-lg font-bold text-white w-full"
+                >
+                  {isSubmitting ? "Loading..." : "Add Recipe"}
+                </Button>
+              </div>
             </div>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-dark-primary text-lg font-bold text-white content-right"
-            >
-              {isSubmitting ? "Loading..." : "Add Recipe"}
-            </Button>
           </div>
         </form>
       ) : (

@@ -11,22 +11,42 @@ router.get(
   "/api/recipes/allrecipes",
   isLoggedIn,
   async (req: Request, res: Response) => {
-    const postList = await prisma.post.findMany();
-    res.json(postList);
+    try {
+      const postList = await prisma.post.findMany({
+        include: {
+          categories: true,
+          ingredients: true,
+        },
+      });
+      res.json(postList);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
 );
 
 // Get all specific user posts based on id
 router.get(
-  "/api/recipes/userRecipes",
+  "/api/recipes/userrecipes",
   isLoggedIn,
   async (req: Request, res: Response) => {
-    const userPosts = await prisma.post.findMany();
-    res.json(userPosts);
+    try {
+      const postList = await prisma.post.findMany({
+        include: {
+          categories: true,
+          ingredients: true,
+        },
+      });
+      res.json(postList);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
 );
 
-// Create Post
+// Create a recipe post
 router.post(
   "/api/recipes/createrecipe",
   isLoggedIn,
@@ -35,8 +55,6 @@ router.post(
     if (!req.user) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-    console.log("testing");
-    console.log(req.body);
     try {
       const { document } = req.body;
       const parsedDocument = JSON.parse(document);
@@ -53,7 +71,9 @@ router.post(
         userId,
       } = parsedDocument;
 
-      const image = req.file?.path || "";
+      const image = req.file?.filename || "";
+
+      console.log(image);
 
       const newPost = await prisma.post.create({
         data: {
@@ -77,7 +97,7 @@ router.post(
           categories: {
             connectOrCreate: categories.map((category: any) => ({
               where: { title: category },
-              create: { title: category }, 
+              create: { title: category },
             })),
           },
         },

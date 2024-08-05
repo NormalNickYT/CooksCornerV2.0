@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import { DashHeader } from "../../components/profile/DashHeader";
 import RecipeForm from "@/components/forms/RecipeForm";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Terminal } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
 import { useState } from "react";
 
 export function AddRecipes() {
@@ -11,9 +11,9 @@ export function AddRecipes() {
 
   const handleRecipePosted = () => {
     setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 3000); 
+    setTimeout(() => setShowAlert(false), 3000);
   };
-  
+
   const goPageBack = () => {
     history.back();
   };
@@ -34,15 +34,15 @@ export function AddRecipes() {
           </div>
           <RecipeForm onRecipePosted={handleRecipePosted} />
           {showAlert && (
-          <div className="fixed bottom-4 right-4 z-50">
-            <Alert className="bg-dark-primary">
-            <Terminal className="h-4 w-4" />
-            <AlertTitle>Success!</AlertTitle>
-            <AlertDescription>
-              Your Recipe has been posted succesfully.
-            </AlertDescription>
-          </Alert>
-        </div>
+            <div className="fixed bottom-4 right-4 z-50">
+              <Alert className="bg-dark-primary">
+                <Terminal className="h-4 w-4" />
+                <AlertTitle>Success!</AlertTitle>
+                <AlertDescription>
+                  Your Recipe has been posted succesfully.
+                </AlertDescription>
+              </Alert>
+            </div>
           )}
         </div>
       </main>

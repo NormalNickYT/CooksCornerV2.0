@@ -16,6 +16,11 @@ export default ({ mode }) => {
           secure: false,
           changeOrigin: true,
         },
+        "/uploads": {
+          target: "http://localhost:5000",
+          secure: false,
+          changeOrigin: true,
+        },
       },
     },
     plugins: [react()],

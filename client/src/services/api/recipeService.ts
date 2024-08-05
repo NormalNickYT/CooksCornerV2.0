@@ -8,10 +8,15 @@ import axios from "axios";
 
 export const getUserRecipes = async () => {
   try {
-    const response = await axios.get(`/posts`);
-    return response.data;
+    const response = await axios.get(`/api/recipes/userrecipes`);
+    const data = response.data;
+
+    return data.map((recipe: ManualRecipe) => ({
+      ...recipe,
+      image: `/uploads/${recipe.image}`,
+    }));
   } catch (error) {
-    console.error("Error fetching posts:", error);
+    console.error("Error fetching recipes:", error);
     throw error;
   }
 };
@@ -25,6 +30,9 @@ export const createManualRecipe = async (data: ManualRecipe) => {
     if (data.image) {
       formData.append("image", data.image);
     }
+
+    console.log(data);
+    console.log(data.image);
 
     const documentJson = {
       title: data.title,

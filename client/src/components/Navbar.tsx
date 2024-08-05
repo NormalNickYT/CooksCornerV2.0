@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, To, useNavigate } from "react-router-dom";
 import Switcher from "./ui/switcher";
 import { useAuth } from "@/context/AuthProvider";
 import {
@@ -27,6 +27,12 @@ const Navbar = () => {
     await logout();
     navigate("/login", { replace: true });
   };
+
+  const handleNavigation =
+    (path: string) => (event: React.MouseEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      navigate(path);
+    };
 
   const navItems = [
     { id: 1, text: "Home" },
@@ -97,10 +103,12 @@ const Navbar = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuLabel onClick={handleNavigation("/dashboard")}>
+                      Dashboard
+                    </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Settings</DropdownMenuItem>
-                    <DropdownMenuItem>Support</DropdownMenuItem>
+                    <DropdownMenuItem>Add Recipe</DropdownMenuItem>
+                    <DropdownMenuItem>Manage Recipes</DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>Logout</DropdownMenuItem>
                   </DropdownMenuContent>
