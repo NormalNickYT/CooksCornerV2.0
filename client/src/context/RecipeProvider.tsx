@@ -32,7 +32,7 @@ const RecipeProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     fetchRecipes();
-  }, []);
+  }, [recipes]);
 
   return (
     <RecipeContext.Provider value={{ recipes, setRecipes, fetchRecipes }}>

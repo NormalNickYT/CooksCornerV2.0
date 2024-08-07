@@ -19,21 +19,30 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link, useNavigate } from "react-router-dom";
 import { DashHeader } from "../../components/profile/DashHeader";
-import { deleteRecipe, getUserRecipes } from "@/services/api/recipeService";
-import { useEffect, useState } from "react";
+import { deleteRecipe } from "@/services/api/recipeService";
 import UserRecipesList from "@/components/profile/UserRecipeList";
-import { DisplayManualRecipe } from "@/types/displayTypes";
 import CookingWoman from "../../assets/img/cooking-woman.png";
 import { useRecipes } from "@/context/RecipeProvider";
+import { useState } from "react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
 
 export const UserRecipes = () => {
   const { recipes, fetchRecipes } = useRecipes();
   const navigate = useNavigate();
+  const [showAlert, setShowAlert] = useState(false);
+  const [deletedRecipeTitle, setDeletedRecipeTitle] = useState<string | null>(null);
 
   const handleDeleteRecipe = async (recipeId: string) => {
     try {
+      const recipe = recipes.find(r => r.id === recipeId);
       await deleteRecipe(recipeId);
       fetchRecipes();
+
+      // TODO: We use this alert multiple times maybe make this a specific component
+      setShowAlert(true);
+      setDeletedRecipeTitle(recipe?.title || "");
+      setTimeout(() => setShowAlert(false), 3000);
       } catch (error) {
         console.error("Error deleting recipe:", error);
       }
@@ -89,15 +98,14 @@ export const UserRecipes = () => {
             </div>
           </div>
          )}
-        {recipes.length > 0 &&  (
+          <TabsContent value="all">
+            <Card x-chunk="dashboard-06-chunk-0">
+            {recipes.length > 0 &&  (
           <CardHeader>
            <CardTitle className="font-bold">Recepten</CardTitle>
            <CardDescription>Beheer je recepten</CardDescription>
           </CardHeader>
         )}
-          <TabsContent value="all">
-            <Card x-chunk="dashboard-06-chunk-0">
-
               <CardContent>
               <div className="w-full items-center justify-center flex py-16 flex-col space-y-10">
               {recipes.length === 0 ? (
@@ -116,6 +124,17 @@ export const UserRecipes = () => {
                 <UserRecipesList recipes={recipes} onDelete={handleDeleteRecipe} />
               )}
               </div>
+              {showAlert && (
+                <div className="fixed bottom-4 right-4 z-50">
+                  <Alert className="bg-dark-primary">
+                    <Terminal className="h-4 w-4" />
+                    <AlertTitle>Success!</AlertTitle>
+                    <AlertDescription>
+                     {deletedRecipeTitle} deleted
+                    </AlertDescription>
+                  </Alert>
+                </div>
+              )}
               </CardContent>
               <CardFooter>
               {recipes.length > 0 && (

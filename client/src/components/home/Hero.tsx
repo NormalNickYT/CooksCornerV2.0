@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 
 export const Hero = () => {
   return (
-    <section className="mx-auto max-w-full pb-20 px-4 items-center lg:flex md:px-20 min-h-screen bg-light-background bg-dark-background">
+    <section className="mx-auto max-w-full pb-20 px-4 items-center lg:flex md:px-20 min-h-screen bg-dark-background">
       <div className="space-y-4 flex-1 sm:text-center lg:text-left">
         <h1 className="dark:text-dark-text text-4xl xl:text-6xl tracking-wide dark:text-text font-extrabold">
-          The Best Place For
-          <span className="bg-gradient-to-r from-dark-accent to-dark-secondary bg-clip-text text-transparent">
-            WorldWide Recipes
+          De beste plek voor
+          <span className="bg-gradient-to-r from-dark-accent to-dark-primary bg-clip-text text-transparent"> <br></br>
+          wereldwijde recepten
           </span>
         </h1>
         <p className="dark:text-dark-text max-w-xl leading-relaxed sm:mx-auto lg:ml-0">
@@ -19,11 +19,11 @@ export const Hero = () => {
           from around the world.
         </p>
         <div className="space-x-4">
-          <Button className="w-24 bg-light-primary dark:bg-dark-primary transition duration-300 hover:-translate-y-0.5 ">
-            <Link to={"/Login"}> Login </Link>
+          <Button className="w-42 bg-light-primary dark:bg-dark-primary dark:text-white text-white transition duration-300 hover:-translate-y-0.5">
+            <Link to={"/Login"}> Alle Recepten </Link>
           </Button>
-          <Button className="w-42 bg-light-secondary30 dark:bg-dark-secondary30 dark:text-white transition duration-300 hover:-translate-y-0.5">
-            <Link to={"/Login"}> Recent Recipes </Link>
+          <Button className="w-24 bg-light-secondary dark:bg-dark-secondary transition duration-300 text-white hover:-translate-y-0.5 ">
+            <Link to={"/Login"}> Login </Link>
           </Button>
         </div>
       </div>

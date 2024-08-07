@@ -1,6 +1,7 @@
 import prisma from "../prisma/prisma";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { User as PrismaUser } from "@prisma/client";
 
 const clientID = process.env.CLIENTID;
 const clientSecret = process.env.CLIENTSECRET;
@@ -41,25 +42,25 @@ passport.use(
           },
         });
         return done(null, newUser);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        console.error("Error during Google authentication:", error);
+        return done(error);
       }
     }
   )
 );
 
-passport.serializeUser(function (user: any, cb) {
-  process.nextTick(function () {
-    return cb(null, {
-      id: user.id,
-    });
-  });
+passport.serializeUser((user: PrismaUser, done) => {
+  done(null, user.id);
 });
 
-passport.deserializeUser(function (user: any, cb) {
-  process.nextTick(function () {
+passport.deserializeUser(async function (id: string, cb) {
+  try {
+    const user = await prisma.user.findUnique({ where: { id } });
     return cb(null, user);
-  });
+  } catch (err) {
+    return cb(err);
+  }
 });
 
 export default passport;

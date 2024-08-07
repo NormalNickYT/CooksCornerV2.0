@@ -17,7 +17,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { DisplayManualRecipe } from "@/types/displayTypes";
-import { deleteRecipe } from "@/services/api/recipeService";
 
 interface UserRecipesListProps {
   recipes: DisplayManualRecipe[];

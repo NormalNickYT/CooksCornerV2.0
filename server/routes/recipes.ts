@@ -73,8 +73,6 @@ router.post(
 
       const image = req.file?.filename || "";
 
-      console.log(image);
-
       const newPost = await prisma.post.create({
         data: {
           title,
@@ -118,9 +116,7 @@ router.delete(
   async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    console.log(JSON.stringify(req.user, null, 2));
-
-    if (!req.user) {
+    if (!req.user || !req.user.id) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
@@ -131,6 +127,14 @@ router.delete(
 
       if (!post) {
         return res.status(404).json({ error: "Recipe not found" });
+      }
+
+      console.log(" post userid " + post.userId + " " + req.user.id);
+
+      if (post.userId !== req.user.id) {
+        return res
+          .status(403)
+          .json({ error: "Forbidden: You are not the owner of this recipe" });
       }
 
       await prisma.post.delete({ where: { id: id } });
