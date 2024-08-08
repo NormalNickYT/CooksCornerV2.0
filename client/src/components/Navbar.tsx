@@ -124,7 +124,7 @@ const Navbar = () => {
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-gradient-to-r from-dark-accent to-dark-secondary py-2 px-3 rounded-md dark:text-dark-text transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105 duration-300"
+                  className="bg-gradient-to-r from-dark-accent to-dark-primary py-2 px-3 rounded-md dark:text-dark-text transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105 duration-300"
                 >
                   Create an account
                 </Link>

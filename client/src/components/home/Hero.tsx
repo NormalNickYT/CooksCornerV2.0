@@ -8,8 +8,9 @@ export const Hero = () => {
       <div className="space-y-4 flex-1 sm:text-center lg:text-left">
         <h1 className="dark:text-dark-text text-4xl xl:text-6xl tracking-wide dark:text-text font-extrabold">
           De beste plek voor
-          <span className="bg-gradient-to-r from-dark-accent to-dark-primary bg-clip-text text-transparent"> <br></br>
-          wereldwijde recepten
+          <span className="bg-gradient-to-r from-dark-accent to-dark-primary bg-clip-text text-transparent">
+            <br></br>
+            wereldwijde recepten
           </span>
         </h1>
         <p className="dark:text-dark-text max-w-xl leading-relaxed sm:mx-auto lg:ml-0">
@@ -19,10 +20,10 @@ export const Hero = () => {
           from around the world.
         </p>
         <div className="space-x-4">
-          <Button className="w-42 bg-light-primary dark:bg-dark-primary dark:text-white text-white transition duration-300 hover:-translate-y-0.5">
+          <Button className="w-42 bg-light-primary dark:bg-dark-primary dark:text-white text-white transition duration-300 hover:shadow-lg hover:-translate-y-0.5">
             <Link to={"/Login"}> Alle Recepten </Link>
           </Button>
-          <Button className="w-24 bg-light-secondary dark:bg-dark-secondary transition duration-300 text-white hover:-translate-y-0.5 ">
+          <Button className="w-24 bg-light-secondary dark:bg-dark-secondary transition duration-300 hover:shadow-lg text-white hover:-translate-y-0.5 ">
             <Link to={"/Login"}> Login </Link>
           </Button>
         </div>

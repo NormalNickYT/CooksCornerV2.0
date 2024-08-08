@@ -41,6 +41,7 @@ import {
 import { PlusCircle, Trash2 } from "lucide-react";
 import FileUpload from "../ui/file-upload";
 import { useAuth } from "@/context/AuthProvider";
+import { useRecipes } from "@/context/RecipeProvider";
 
 type RecipeFormProps = {
   onRecipePosted: () => void;
@@ -55,6 +56,7 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
   const [status, setStatus] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { user } = useAuth();
+  const { fetchAllUsersRecipes } = useRecipes();
 
   const categoriesList: Option[] = [
     { value: "Breakfast", label: "Breakfast" },
@@ -124,6 +126,8 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
 
     try {
       await createManualRecipe(completeData);
+
+      fetchAllUsersRecipes();
       onRecipePosted();
     } catch (error) {
       console.error("Error creating recipe:", error);
@@ -478,7 +482,9 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
               <Card className="overflow-hidden">
                 <CardHeader>
                   <CardTitle>Afbeelding Recept*</CardTitle>
-                  <CardDescription>Voeg je afbeelding van het recept hier toe</CardDescription>
+                  <CardDescription>
+                    Voeg je afbeelding van het recept hier toe
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-2">
@@ -520,7 +526,9 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
               <Card>
                 <CardHeader>
                   <CardTitle>Recept Informatie</CardTitle>
-                  <CardDescription>Vul je details over het recept hier in</CardDescription>
+                  <CardDescription>
+                    Vul je details over het recept hier in
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-6">

@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
-import { SVGProps } from "react";
+import { SVGProps, useEffect } from "react";
 import { JSX } from "react/jsx-runtime";
 import { DashHeader } from "../../components/profile/DashHeader";
 import { useAuth } from "@/context/AuthProvider";
@@ -25,11 +25,17 @@ import { useRecipes } from "@/context/RecipeProvider";
 
 export function Dashboard() {
   const { user } = useAuth();
-  const { recipes } = useRecipes();
+  const { userRecipes, fetchUserRecipes } = useRecipes();
 
   if (!user) {
     return <div>Loading...</div>;
   }
+
+  useEffect(() => {
+    if (user !== null && user.id !== undefined) {
+      fetchUserRecipes(user.id);
+    }
+  }, []);
 
   return (
     <div className="flex min-h-screen w-full sm:gap-4 sm:py-4 sm:pl-14 flex-col">
@@ -57,7 +63,7 @@ export function Dashboard() {
               <DollarSignIcon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{recipes.length}</div>
+              <div className="text-2xl font-bold">{userRecipes.length}</div>
               <p className="text-xs text-muted-foreground">
                 +20.1% from last month
               </p>
@@ -315,7 +321,7 @@ export function Dashboard() {
 }
 
 function ArrowUpRightIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
+  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>,
 ) {
   return (
     <svg
@@ -337,7 +343,7 @@ function ArrowUpRightIcon(
 }
 
 function CreditCardIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
+  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>,
 ) {
   return (
     <svg
@@ -359,7 +365,7 @@ function CreditCardIcon(
 }
 
 function DollarSignIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
+  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>,
 ) {
   return (
     <svg

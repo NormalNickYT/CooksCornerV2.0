@@ -6,19 +6,35 @@ import upload from "../middleware/multerStorage";
 const prisma = new PrismaClient();
 const router = Router();
 
-// Get all user posts
+// Get specific users recipes based on id
 router.get(
-  "/api/recipes/allrecipes",
+  "/api/recipes/user/:id",
   isLoggedIn,
   async (req: Request, res: Response) => {
     try {
-      const postList = await prisma.post.findMany({
+      const userId = req.params.id;
+
+      if (!userId) {
+        return res.status(400).json({ error: "User ID is required" });
+      }
+
+      const recipes = await prisma.post.findMany({
+        where: {
+          userId: userId,
+        },
         include: {
           categories: true,
           ingredients: true,
         },
       });
-      res.json(postList);
+
+      if (!recipes || recipes.length === 0) {
+        return res
+          .status(404)
+          .json({ error: "No recipes found for this user" });
+      }
+
+      res.json(recipes);
     } catch (error) {
       console.error("Error fetching posts:", error);
       res.status(500).json({ error: "Internal Server Error" });
@@ -26,25 +42,22 @@ router.get(
   }
 );
 
-// Get all specific user posts based on id
-router.get(
-  "/api/recipes/userrecipes",
-  isLoggedIn,
-  async (req: Request, res: Response) => {
-    try {
-      const postList = await prisma.post.findMany({
-        include: {
-          categories: true,
-          ingredients: true,
-        },
-      });
-      res.json(postList);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
+// Get all user posts
+router.get("/api/recipes/userrecipes", async (req: Request, res: Response) => {
+  try {
+    const postList = await prisma.post.findMany({
+      include: {
+        categories: true,
+        ingredients: true,
+        user: true,
+      },
+    });
+    res.json(postList);
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-);
+});
 
 // Create a recipe post
 router.post(

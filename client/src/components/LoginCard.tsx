@@ -55,20 +55,20 @@ export const LoginCard = () => {
           </div>
           <Button
             type="submit"
-            className="w-full bg-gradient-to-r from-dark-accent to-dark-secondary"
+            className="w-full bg-gradient-to-r from-dark-accent to-dark-primary"
           >
             Login
           </Button>
           <Button
             onClick={handleOAuthSubmitEvent}
             variant="outline"
-            className="w-full dark:bg-dark-secondary30"
+            className="w-full dark:bg-dark-primary"
           >
             Login with Google
           </Button>
         </div>
         <div className="mt-4 text-center text-sm">
-          Don&apos;t have an account?
+          Don&apos;t have an account? <br />
           <Link className="underline" to={"/register"}>
             Sign up
           </Link>

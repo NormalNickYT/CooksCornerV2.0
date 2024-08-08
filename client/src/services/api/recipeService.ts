@@ -6,10 +6,29 @@ import {
 } from "@/schemas/Recipe";
 import axios from "axios";
 
-export const getUserRecipes = async () => {
+export const getAllUsersRecipes = async () => {
   try {
     const response = await axios.get(`/api/recipes/userrecipes`);
     const data = response.data;
+
+    console.log(data);
+
+    return data.map((recipe: ManualRecipe) => ({
+      ...recipe,
+      image: `/uploads/${recipe.image}`,
+    }));
+  } catch (error) {
+    console.error("Error fetching recipes:", error);
+    throw error;
+  }
+};
+
+export const getUserRecipes = async (userId: number) => {
+  try {
+    const response = await axios.get(`/api/recipes/user/${userId}`);
+    const data = response.data;
+
+    console.log(data);
 
     return data.map((recipe: ManualRecipe) => ({
       ...recipe,
@@ -67,12 +86,12 @@ export const deleteRecipe = async (recipeId: string) => {
     await axios.delete(`/api/recipes/delete/${recipeId}`, {
       withCredentials: true,
     });
-    console.log('Recipe deleted successfully');
+    console.log("Recipe deleted successfully");
   } catch (error) {
-    console.error('Error deleting recipe:', error);
+    console.error("Error deleting recipe:", error);
     throw error;
   }
-}
+};
 
 export const createURLRecipe = async (data: URLRecipe) => {
   try {

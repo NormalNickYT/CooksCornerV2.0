@@ -1,3 +1,8 @@
+export interface DisplayUser {
+  id: string;
+  username: string;
+}
+
 export interface DisplayCategory {
   id: string;
   title: string;
@@ -9,4 +14,6 @@ export interface DisplayManualRecipe {
   status: string;
   categories: DisplayCategory[];
   image: string;
+  user: DisplayUser;
+  preparationTime: number;
 }

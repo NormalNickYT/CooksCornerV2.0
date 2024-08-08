@@ -71,27 +71,25 @@
 }
 
 @layer base {
-
   * {
     @apply border-border;
   }
   body {
     @apply text-foreground;
+    @apply bg-dark-background;
   }
 
   html {
     font-family: "Montserrat";
   }
-
 }
-
 
 @layer utilities {
   .underline-wavy-hotpink {
     position: relative;
   }
   .underline-wavy-hotpink::after {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     bottom: -2px;
@@ -118,10 +116,10 @@
     width: 100%;
     bottom: 0;
     text-align: center;
-}
+  }
 
-.curve::before {
-    content: '';
+  .curve::before {
+    content: "";
     display: block;
     position: absolute;
     border-radius: 100% 50%;
@@ -129,10 +127,10 @@
     height: 100%;
     transform: translate(85%, 60%);
     background-color: hsl(216, 21%, 16%);
-}
+  }
 
-.curve::after {
-    content: '';
+  .curve::after {
+    content: "";
     display: block;
     position: absolute;
     border-radius: 100% 50%;
@@ -141,12 +139,13 @@
     background-color: hsl(222.2 84% 4.9%);
     transform: translate(-4%, 40%);
     z-index: -1;
-}
+  }
 
-.shadow-button {
-  transition: transform ease 0.2s, box-shadow ease 0.2s;}
-
-
+  .shadow-button {
+    transition:
+      transform ease 0.2s,
+      box-shadow ease 0.2s;
+  }
 }
 
 .shadow-button:hover {
@@ -174,4 +173,3 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
-
