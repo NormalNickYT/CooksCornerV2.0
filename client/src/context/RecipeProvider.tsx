@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import {
   getAllUsersRecipes,
+  getRecentRecipes,
   getUserRecipes,
 } from "@/services/api/recipeService";
 import { DisplayManualRecipe } from "@/types/displayTypes";
@@ -18,6 +19,7 @@ interface RecipeContextType {
   setRecipes: React.Dispatch<React.SetStateAction<DisplayManualRecipe[]>>;
   fetchAllUsersRecipes: () => Promise<void>;
   fetchUserRecipes: (userId: number) => Promise<void>;
+  fetchRecentRecipes: (limit: number) => Promise<void>;
 }
 
 const RecipeContext = createContext<RecipeContextType>({
@@ -26,6 +28,7 @@ const RecipeContext = createContext<RecipeContextType>({
   setRecipes: () => {},
   fetchAllUsersRecipes: async () => {},
   fetchUserRecipes: async () => {},
+  fetchRecentRecipes: async () => {},
 });
 
 export const useRecipes = () => {
@@ -54,6 +57,15 @@ const RecipeProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const fetchRecentRecipes = async (limit: number) => {
+    try {
+      const result = await getRecentRecipes(limit);
+      setRecipes(result);
+    } catch (error) {
+      console.error("Error fetching recent recipes:", error);
+    }
+  };
+
   return (
     <RecipeContext.Provider
       value={{
@@ -62,6 +74,7 @@ const RecipeProvider = ({ children }: { children: ReactNode }) => {
         setRecipes,
         fetchAllUsersRecipes,
         fetchUserRecipes,
+        fetchRecentRecipes,
       }}
     >
       {children}

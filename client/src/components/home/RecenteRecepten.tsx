@@ -11,12 +11,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import CardRecipeList from "../CardRecipeList";
+import { useEffect } from "react";
 
 interface PopulaireReceptenProps {
   recipes: DisplayManualRecipe[];
 }
 
 const RecenteRecepten = ({ recipes }: PopulaireReceptenProps) => {
+
+
+  useEffect(() => {
+    console.log(recipes);
+});
+
   return (
     <div className="menu-tab pb-10 ">
       <div className="px-4 lg:px-20">

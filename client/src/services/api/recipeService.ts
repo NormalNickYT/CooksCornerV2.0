@@ -11,8 +11,6 @@ export const getAllUsersRecipes = async () => {
     const response = await axios.get(`/api/recipes/userrecipes`);
     const data = response.data;
 
-    console.log(data);
-
     return data.map((recipe: ManualRecipe) => ({
       ...recipe,
       image: `/uploads/${recipe.image}`,
@@ -28,14 +26,31 @@ export const getUserRecipes = async (userId: number) => {
     const response = await axios.get(`/api/recipes/user/${userId}`);
     const data = response.data;
 
-    console.log(data);
-
     return data.map((recipe: ManualRecipe) => ({
       ...recipe,
       image: `/uploads/${recipe.image}`,
     }));
   } catch (error) {
     console.error("Error fetching recipes:", error);
+    throw error;
+  }
+};
+
+export const getRecentRecipes = async (limit : number) => {
+  try {
+    const response = await axios.get(`/api/recipes/recent`, {
+      params: {
+        limit: limit
+      }
+    });
+    const data = response.data;
+
+    return data.map((recipe: ManualRecipe) => ({
+      ...recipe,
+      image: `/uploads/${recipe.image}`,
+    }));
+  } catch (error) {
+    console.error("Error fetching recent recipes:", error);
     throw error;
   }
 };
@@ -50,19 +65,19 @@ export const createManualRecipe = async (data: ManualRecipe) => {
       formData.append("image", data.image);
     }
 
-    console.log(data);
-    console.log(data.image);
-
     const documentJson = {
       title: data.title,
       description: data.description,
       ingredients: data.ingredients,
-      approach: data.approach,
+      approachSteps: data.approachSteps,
       preparationTime: data.preparationTime,
       tips: data.tips,
       status: data.status,
       categories: data.categories,
       userId: data.userId,
+      cookTime: data.cookTime,
+      servings: data.servings,
+      totalTime: data.totalTime,
     };
 
     formData.append("document", JSON.stringify(documentJson));

@@ -1,9 +1,7 @@
-// CardRecipeList.tsx
-
 import { DisplayManualRecipe } from "../types/displayTypes";
 import { Badge } from "./ui/badge";
 import { CardContent, Card } from "@/components/ui/card";
-import { MoreVertical, Timer } from "lucide-react";
+import { MoreVertical, Timer, Plus, Star, CircleUser} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,9 +38,18 @@ const CardRecipeList = ({ recipe }: CardRecipeListProps) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>Favorieten</DropdownMenuItem>
-            <DropdownMenuItem>Toevoegen aan collectie</DropdownMenuItem>
-            <DropdownMenuItem>Profiel maker</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Star className=" h-4 text-gray-600 dark:text-gray-400" />
+            Favorieten
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Plus className=" h-4 text-gray-600 dark:text-gray-400" />
+            Toevoegen aan collectie
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+             <CircleUser className=" h-4 text-gray-600 dark:text-gray-400" />
+              Profiel maker
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <div className="text-lg font-bold text-text dark:text-dark-text">
@@ -51,15 +58,15 @@ const CardRecipeList = ({ recipe }: CardRecipeListProps) => {
         <p className="text-sm text-gray-600 dark:text-gray-400">
           {recipe.user.username}
         </p>
-        <div className="flex flex-wrap gap-2 mt-2">
+        <div className="flex flex-wrap gap-2 mt-2 mb-16">
           {recipe.categories.length > 0 ? (
-            recipe.categories.map((category) => (
+            recipe.categories.map((categoryObj) => (
               <Badge
-                className="bg-dark-accent"
+                className="bg-dark-primary text-white"
                 variant="outline"
-                key={category.id}
+                key={categoryObj.category.id}
               >
-                {category.title}
+                {categoryObj.category.title}
               </Badge>
             ))
           ) : (
@@ -69,7 +76,7 @@ const CardRecipeList = ({ recipe }: CardRecipeListProps) => {
         <div className="absolute bottom-4 right-4 flex items-center space-x-2">
           <Timer className="h-6 w-6 text-gray-600 dark:text-gray-400" />
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            {recipe.preparationTime} min
+            {recipe.totalTime} min
           </p>
         </div>
       </CardContent>

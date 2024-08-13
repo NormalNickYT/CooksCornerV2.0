@@ -23,21 +23,19 @@ router.get(
           userId: userId,
         },
         include: {
-          categories: true,
+          categories: {
+            select: {
+              category: true,
+            },
+          },
           ingredients: true,
         },
       });
 
-      if (!recipes || recipes.length === 0) {
-        return res
-          .status(404)
-          .json({ error: "No recipes found for this user" });
-      }
-
       res.json(recipes);
     } catch (error) {
       console.error("Error fetching posts:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ error: "Error fetching posts:" });
     }
   }
 );
@@ -47,7 +45,11 @@ router.get("/api/recipes/userrecipes", async (req: Request, res: Response) => {
   try {
     const postList = await prisma.post.findMany({
       include: {
-        categories: true,
+        categories: {
+          select: {
+            category: true,
+          },
+        },
         ingredients: true,
         user: true,
       },
@@ -55,6 +57,32 @@ router.get("/api/recipes/userrecipes", async (req: Request, res: Response) => {
     res.json(postList);
   } catch (error) {
     console.error("Error fetching posts:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Get the most recent recipes (limit to 4)
+router.get("/api/recipes/recent", async (req: Request, res: Response) => {
+  try {
+    const recentRecipes = await prisma.post.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 4,
+      include: {
+        categories: {
+          select: {
+            category: true,
+          },
+        },
+        ingredients: true,
+        user: true,
+      },
+    });
+
+    res.json(recentRecipes);
+  } catch (error) {
+    console.error("Error fetching recent recipes:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -76,14 +104,28 @@ router.post(
         title,
         description,
         ingredients,
-        approach,
+        approachSteps,
         preparationTime,
         tips,
         status,
         categories,
         userId,
+        servings,
+        cookTime,
+        totalTime,
       } = parsedDocument;
 
+      console.log(parsedDocument);
+
+      const categoryPromises = categories.map((category: string) =>
+        prisma.category.upsert({
+          where: { title: category },
+          update: {},
+          create: { title: category },
+        })
+      );
+
+      const createdCategories = await Promise.all(categoryPromises);
       const image = req.file?.filename || "";
 
       const newPost = await prisma.post.create({
@@ -101,14 +143,21 @@ router.post(
               unit: ingredient.unit,
             })),
           },
-          approach,
+          approachSteps: {
+            create: approachSteps.map((step: any, index: number) => ({
+              content: step.content,
+              order: index + 1,
+            })),
+          },
           preparationTime: preparationTime,
           tips,
           status,
+          servings,
+          cookTime,
+          totalTime,
           categories: {
-            connectOrCreate: categories.map((category: any) => ({
-              where: { title: category },
-              create: { title: category },
+            create: createdCategories.map((category) => ({
+              category: { connect: { id: category.id } },
             })),
           },
         },
@@ -141,8 +190,6 @@ router.delete(
       if (!post) {
         return res.status(404).json({ error: "Recipe not found" });
       }
-
-      console.log(" post userid " + post.userId + " " + req.user.id);
 
       if (post.userId !== req.user.id) {
         return res

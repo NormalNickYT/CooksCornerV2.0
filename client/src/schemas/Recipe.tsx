@@ -14,13 +14,16 @@ export const manualRecipeSchema = z.object({
       })
     )
     .min(1, "At least one ingredient is required"),
-  approach: z.string().min(1, "Approach is required"),
+  approachSteps: z.array(z.object({content: z.string().min(1, "Step content is required") }) ).min(1, "At least one step is required"),
   preparationTime: z.number().min(1, "Preparation time is required"),
   tips: z.string().nullable(),
   categories: z.string().array().min(1, "At least one category is required"),
   status: z.string().min(1, "Status is required"),
   image: z.instanceof(File, { message: "Image is required" }),
   userId: z.string().optional(),
+  servings: z.number().min(1, "Servings is required"),
+  cookTime: z.number().optional(),
+  totalTime: z.number().optional(),
 });
 
 export const urlRecipeSchema = z.object({

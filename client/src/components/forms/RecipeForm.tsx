@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -52,9 +52,15 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
   const [ingredients, setIngredients] = useState([
     { name: "", amount: "", unit: "" },
   ]);
+  const [steps, setSteps] = useState([
+    { content : "" },
+  ]);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [status, setStatus] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [totalTime, setTotalTime] = useState(0);
+  const [preparationTime, setPreparationTime] = useState(0);
+  const [cookingTime, setCookingTime] = useState(0);
   const { user } = useAuth();
   const { fetchAllUsersRecipes } = useRecipes();
 
@@ -98,6 +104,16 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
     });
   };
 
+  const handleAddStep = () => {
+    setSteps([...steps, { content: "" }]);
+  };
+
+  const handleDeleteStep = (index: number) => {
+    setSteps((oldValues) => {
+      return oldValues.filter((_, i) => i !== index);
+    });
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -121,6 +137,7 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
       ...data,
       status,
       selectedCategories,
+      totalTime,
       userId: String(user.id),
     };
 
@@ -154,6 +171,20 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
 
   const optionsToValues = (options: Option[]): string[] => {
     return options.map((option) => option.value);
+  };
+
+  useEffect(() => {
+    setTotalTime(preparationTime + cookingTime);
+  }, [preparationTime, cookingTime]);
+
+  const handlePreparationTimeChange = (e : ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10) || 0;
+    setPreparationTime(value);
+  };
+
+  const handleCookingTimeChange = (e : ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10) || 0;
+    setCookingTime(value);
   };
 
   return (
@@ -216,22 +247,27 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
                       )}
                     </div>
                     <div className="grid gap-3">
-                      <Label htmlFor="approach">Werkwijze*</Label>
-                      <Textarea
-                        id="approach"
-                        placeholder="Leg uit hoe u uw recept moet maken, inclusief oventemperaturen, bak- of bereidingstijden en pangroottes, enz. Gebruik optionele kopteksten om de verschillende delen van het recept te ordenen (d.w.z. Voorbereiden, Bakken, Versieren)."
-                        {...registerManual("approach")}
-                        className="min-h-32"
+                      <Label htmlFor="servings">
+                        Servings*
+                      </Label>
+                      <Input
+                        id="servings"
+                        type="number"
+                        {...registerManual("servings", {
+                          valueAsNumber: true,
+                        })}
+                        defaultValue={0}
+                        placeholder="e.g 5"
                       />
-                      {errorsManual.approach && (
+                      {errorsManual.servings && (
                         <p className="text-xs italic text-red-500 mt-2">
-                          {errorsManual.approach.message}
+                          {errorsManual.servings.message}
                         </p>
                       )}
                     </div>
                     <div className="grid gap-3">
                       <Label htmlFor="preparationTime">
-                        Bereidtijd (in minuten)
+                        Bereidtijd (minuten)
                       </Label>
                       <Input
                         id="preparationTime"
@@ -240,6 +276,8 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
                           valueAsNumber: true,
                         })}
                         defaultValue={0}
+                        placeholder="0"
+                        onChange={handlePreparationTimeChange}
                       />
                       {errorsManual.preparationTime && (
                         <p className="text-xs italic text-red-500 mt-2">
@@ -247,8 +285,90 @@ const RecipeForm = ({ onRecipePosted }: RecipeFormProps) => {
                         </p>
                       )}
                     </div>
+                    <div className="grid gap-3">
+                      <Label htmlFor="cookTime">
+                        Kook tijd (minuten) (optioneel)
+                      </Label>
+                      <Input
+                        id="cookTime"
+                        type="number"
+                        {...registerManual("cookTime", {
+                          valueAsNumber: true,
+                        })}
+                        defaultValue={0}
+                        placeholder="0"
+                        onChange={handleCookingTimeChange}
+                      />
+                      {errorsManual.cookTime && (
+                        <p className="text-xs italic text-red-500 mt-2">
+                          {errorsManual.cookTime.message}
+                        </p>
+                      )}
+                    </div>
+                    <p> Total Time = {totalTime} </p>
                   </div>
                 </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Werkwijze*</CardTitle>
+                  <CardDescription> Leg uit hoe u uw recept moet maken, inclusief oventemperaturen, bak- of bereidingstijden en pangroottes, enz. Gebruik optionele kopteksten om de verschillende delen van het recept te ordenen (d.w.z. Voorbereiden, Bakken, Versieren).
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {steps.map((step, index) => (
+                        <TableRow key={index}>
+                          <TableCell>
+                            <Label
+                              htmlFor={`approachSteps.${index}.content`}
+                              className="sr-only"
+                            >
+                              Ingredient
+                            </Label>
+                             <Textarea
+                              id={`approachSteps.${index}.content`}
+                              {...registerManual(
+                                `approachSteps.${index}.content` as keyof ManualRecipe,
+                              )}
+                              className="min-h-32"
+                              defaultValue={step.content}
+                              placeholder={`Step ${index + 1 }`}
+                            />
+                            {errorsManual.approachSteps?.[index]?.content && (
+                              <p className="text-xs italic text-red-500 mt-2">
+                                {errorsManual.approachSteps[index].content?.message}
+                              </p>
+                            )}
+                          </TableCell>
+                          <Button
+                            onClick={() => handleDeleteStep(index)}
+                            className="my-10"
+                          >
+                            <Trash2 className="h-5 w-5"></Trash2>
+                          </Button>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+                <CardFooter className="justify-center border-t p-4">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="gap-1"
+                    type="button"
+                    onClick={handleAddStep}
+                  >
+                    <PlusCircle className="h-3.5 w-3.5" />
+                    Voeg stap toe
+                  </Button>
+                </CardFooter>
               </Card>
               <Card>
                 <CardHeader>

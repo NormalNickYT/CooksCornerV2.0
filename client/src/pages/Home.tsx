@@ -4,22 +4,38 @@ import { NieuwsGroepen } from "@/components/home/NieuwsGroepen";
 import PopulaireRecepten from "@/components/home/PopulaireRecepten";
 import RecenteRecepten from "@/components/home/RecenteRecepten";
 import { useRecipes } from "@/context/RecipeProvider";
-import { useEffect } from "react";
+import { getRecentRecipes } from "@/services/api/recipeService";
+import { useEffect, useState } from "react";
 
 export const Home = () => {
-  const { recipes, fetchAllUsersRecipes } = useRecipes();
+  // Here we need the most populair recipes
+  const [recentRecipes, setRecentRecipes] = useState([]);
+
+  // TODO: Loading Component
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchAllUsersRecipes();
+    const fetchRecentRecipes = async () => {
+      try {
+        const recipes = await getRecentRecipes(4);
+        setRecentRecipes(recipes);
+      } catch (error) {
+        console.error("Error fetching recent recipes:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecentRecipes();
   }, []);
 
   return (
     <div>
       <Hero />
       <section className="bg-light-background dark:bg-dark-background pb-20">
-        <PopulaireRecepten recipes={recipes} />
+        <PopulaireRecepten recipes={recentRecipes} />
         <NieuwsGroepen />
-        <RecenteRecepten recipes={recipes} />
+        <RecenteRecepten recipes={recentRecipes} />
         <BannerSection />
       </section>
     </div>

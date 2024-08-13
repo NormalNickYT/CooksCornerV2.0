@@ -21,20 +21,23 @@ model User {
 }
 
 model Post {
-  id              String       @id @unique @default(cuid())
+  id              String         @id @unique @default(cuid())
   title           String
   userId          String
-  user            User         @relation(fields: [userId], references: [id])
-  categories      Category[]   @relation("PostCategories")
+  user            User           @relation(fields: [userId], references: [id])
+  categories      PostCategory[]
   url             String?
   image           String
-  createdAt       DateTime     @default(now())
+  createdAt       DateTime       @default(now())
   description     String?
-  ingredients     Ingredient[] @relation("PostIngredients")
+  ingredients     Ingredient[]   @relation("PostIngredients")
   tips            String?
   status          String
   preparationTime Int
-  approach        String
+  cookTime        Int?
+  totalTime       Int
+  servings        Int
+  approachSteps   Step[]         @relation("PostSteps")
 
   @@index([userId])
 }
@@ -50,8 +53,29 @@ model Ingredient {
   @@index([postId])
 }
 
+model Step {
+  id      String  @id @default(cuid())
+  content String
+  order   Int
+  post    Post?   @relation("PostSteps", fields: [postId], references: [id])
+  postId  String?
+
+  @@index([postId])
+}
+
 model Category {
-  id    String @id @unique @default(cuid())
-  title String @unique
-  posts Post[] @relation("PostCategories")
+  id           String         @id @unique @default(cuid())
+  title        String         @unique
+  PostCategory PostCategory[]
+}
+
+model PostCategory {
+  postId     String
+  categoryId String
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([postId, categoryId])
+  @@index([postId])
+  @@index([categoryId])
 }

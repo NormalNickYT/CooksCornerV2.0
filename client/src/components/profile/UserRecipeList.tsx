@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { DisplayManualRecipe } from "@/types/displayTypes";
+import { useEffect } from "react";
 
 interface UserRecipesListProps {
   recipes: DisplayManualRecipe[];
@@ -24,6 +25,7 @@ interface UserRecipesListProps {
 }
 
 const UserRecipesList = ({ recipes, onDelete }: UserRecipesListProps) => {
+
   const handleClickDeleteRecipe = (recipeId: string) => (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     onDelete(recipeId);
@@ -77,8 +79,8 @@ const UserRecipesList = ({ recipes, onDelete }: UserRecipesListProps) => {
           </TableCell>
           <TableCell className="hidden md:table-cell">
             {recipe.categories.length > 0 ? (
-              recipe.categories.map((category) => (
-                <Badge className="bg-dark-accent" variant="outline" key = {category.id} >{category.title}</Badge>
+              recipe.categories.map((categoryObj) => (
+                <Badge className="bg-dark-accent" variant="outline" key = {categoryObj.category.id} >{categoryObj.category.title}</Badge>
               ))
             ) : (
               <div>Geen Categorieen</div>
