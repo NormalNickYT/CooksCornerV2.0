@@ -64,11 +64,13 @@ router.get("/api/recipes/userrecipes", async (req: Request, res: Response) => {
 // Get the most recent recipes (limit to 4)
 router.get("/api/recipes/recent", async (req: Request, res: Response) => {
   try {
+    const limit = parseInt(req.query.limit as string) || 4;
+
     const recentRecipes = await prisma.post.findMany({
       orderBy: {
         createdAt: "desc",
       },
-      take: 4,
+      take: limit,
       include: {
         categories: {
           select: {

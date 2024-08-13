@@ -1,28 +1,11 @@
 import { DisplayManualRecipe } from "../../types/displayTypes";
-import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
-import { CardContent, Card } from "@/components/ui/card";
-import { MoreVertical, Timer } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import CardRecipeList from "../CardRecipeList";
-import { useEffect } from "react";
 
 interface PopulaireReceptenProps {
   recipes: DisplayManualRecipe[];
 }
 
 const RecenteRecepten = ({ recipes }: PopulaireReceptenProps) => {
-
-
-  useEffect(() => {
-    console.log(recipes);
-});
 
   return (
     <div className="menu-tab pb-10 ">
