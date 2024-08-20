@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import { isLoggedIn } from "../middleware/authMiddleware";
 import upload from "../middleware/multerStorage";
+import { getFilteredRecipes } from "../services/recipeServices";
 
 const prisma = new PrismaClient();
 const router = Router();
@@ -40,51 +41,22 @@ router.get(
   }
 );
 
-// Get all user posts
 router.get("/api/recipes/userrecipes", async (req: Request, res: Response) => {
   try {
-    const postList = await prisma.post.findMany({
-      include: {
-        categories: {
-          select: {
-            category: true,
-          },
-        },
-        ingredients: true,
-        user: true,
-      },
-    });
-    res.json(postList);
+    const filters = {
+      name: req.query.name as string,
+      recents: req.query.recents === "true" ? true : undefined,
+      sortBy: req.query.sortBy as string,
+      sortOrder: req.query.sortOrder as "asc" | "desc",
+      limit: parseInt(req.query.limit as string) || 4,
+      offset: parseInt(req.query.offset as string) || 0,
+    };
+
+    const recipes = await getFilteredRecipes(filters);
+
+    res.status(200).json(recipes);
   } catch (error) {
     console.error("Error fetching posts:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-// Get the most recent recipes (limit to 4)
-router.get("/api/recipes/recent", async (req: Request, res: Response) => {
-  try {
-    const limit = parseInt(req.query.limit as string) || 4;
-
-    const recentRecipes = await prisma.post.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-      take: limit,
-      include: {
-        categories: {
-          select: {
-            category: true,
-          },
-        },
-        ingredients: true,
-        user: true,
-      },
-    });
-
-    res.json(recentRecipes);
-  } catch (error) {
-    console.error("Error fetching recent recipes:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -116,8 +88,6 @@ router.post(
         cookTime,
         totalTime,
       } = parsedDocument;
-
-      console.log(parsedDocument);
 
       const categoryPromises = categories.map((category: string) =>
         prisma.category.upsert({

@@ -55,14 +55,15 @@ router.get(
 router.post(
   "/api/logout",
   isLoggedIn,
-  (req: express.Request, res: express.Response, next) => {
+  (req: express.Request, res: express.Response) => {
     try {
       res
         .clearCookie("connect.sid")
         .status(200)
         .json("User has been signed out");
     } catch (error) {
-      next(error);
+      console.error("Error during logout:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
   }
 );

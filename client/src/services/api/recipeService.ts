@@ -21,6 +21,26 @@ export const getAllUsersRecipes = async () => {
   }
 };
 
+export const getRecentRecipes = async (limit : number) => {
+  try {
+    const response = await axios.get(`/api/recipes/userrecipes`, {
+      params: {
+        recents: true,
+        limit: limit,
+      },
+    });
+    const data = response.data;
+
+    return data.map((recipe: ManualRecipe) => ({
+      ...recipe,
+      image: `/uploads/${recipe.image}`,
+    }));
+  } catch (error) {
+    console.error("Error fetching recent recipes:", error);
+    throw error;
+  }
+};
+
 export const getUserRecipes = async (userId: number) => {
   try {
     const response = await axios.get(`/api/recipes/user/${userId}`);
@@ -32,25 +52,6 @@ export const getUserRecipes = async (userId: number) => {
     }));
   } catch (error) {
     console.error("Error fetching recipes:", error);
-    throw error;
-  }
-};
-
-export const getRecentRecipes = async (limit : number) => {
-  try {
-    const response = await axios.get(`/api/recipes/recent`, {
-      params: {
-        limit: limit
-      }
-    });
-    const data = response.data;
-
-    return data.map((recipe: ManualRecipe) => ({
-      ...recipe,
-      image: `/uploads/${recipe.image}`,
-    }));
-  } catch (error) {
-    console.error("Error fetching recent recipes:", error);
     throw error;
   }
 };
