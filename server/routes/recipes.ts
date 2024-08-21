@@ -2,10 +2,13 @@ import { Request, Response, Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import { isLoggedIn } from "../middleware/authMiddleware";
 import upload from "../middleware/multerStorage";
-import { getFilteredRecipes } from "../services/recipeServices";
+import { RecipeService } from "../services/recipeService";
+import { RecipeFilters } from "../types/recipefilters";
 
 const prisma = new PrismaClient();
 const router = Router();
+
+const _recipeService = new RecipeService();
 
 // Get specific users recipes based on id
 router.get(
@@ -43,16 +46,19 @@ router.get(
 
 router.get("/api/recipes/userrecipes", async (req: Request, res: Response) => {
   try {
-    const filters = {
+    const filters: RecipeFilters = {
       name: req.query.name as string,
       recents: req.query.recents === "true" ? true : undefined,
-      sortBy: req.query.sortBy as string,
+      sortBy: req.query.sortBy as "createdAt" | "title" | "totalTime",
       sortOrder: req.query.sortOrder as "asc" | "desc",
       limit: parseInt(req.query.limit as string) || 4,
       offset: parseInt(req.query.offset as string) || 0,
+      category: req.query.category as string,
+      maxTotalTime: parseInt(req.query.maxTotalTime as string),
+      servings: parseInt(req.query.servings as string),
     };
 
-    const recipes = await getFilteredRecipes(filters);
+    const recipes = await _recipeService.getFilteredRecipes(filters);
 
     res.status(200).json(recipes);
   } catch (error) {
