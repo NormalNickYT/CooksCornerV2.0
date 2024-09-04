@@ -6,7 +6,6 @@ interface PopulaireReceptenProps {
 }
 
 const RecenteRecepten = ({ recipes }: PopulaireReceptenProps) => {
-
   return (
     <div className="menu-tab pb-10 ">
       <div className="px-4 lg:px-20">

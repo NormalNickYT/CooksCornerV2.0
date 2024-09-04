@@ -9,6 +9,7 @@ import { DashBoardLayout } from "./layouts/DashboardLayout";
 import UserRecipes from "./pages/profile/UserRecipes";
 import AddRecipe from "./pages/profile/AddRecipe";
 import RecipeProvider from "./context/RecipeProvider";
+import { Recipes } from "./pages/Recipes";
 
 function App() {
   return (
@@ -30,6 +31,14 @@ function App() {
               element={
                 <Layout>
                   <Login />
+                </Layout>
+              }
+            />
+            <Route
+              path="/recipes"
+              element={
+                <Layout>
+                  <Recipes />
                 </Layout>
               }
             />

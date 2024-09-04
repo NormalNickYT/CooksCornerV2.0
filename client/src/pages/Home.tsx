@@ -10,7 +10,6 @@ export const Home = () => {
   const [recentRecipes, setRecentRecipes] = useState([]);
   // TODO: Loading Component
   const [loading, setLoading] = useState(true);
-
   const limit = 4;
 
   useEffect(() => {

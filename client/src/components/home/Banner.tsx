@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 
 export const BannerSection = () => {
   return (
-    <div className="relative w-full h-[500px] overflow-hidden my-10">
+    <div className="relative w-full h-[500px] overflow-hidden">
       <img
         src={banner}
         alt="Banner"
