@@ -48,10 +48,6 @@ export class RecipeRepository {
       where.servings = { gte: servings };
     }
 
-    if (servings) {
-      where.servings = { gte: servings };
-    }
-
     if (recents) {
       orderBy.createdAt = "desc";
     } else if (sortBy) {
