@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
+import {Utensils} from "lucide-react";
 
 interface CardRecipeListProps {
   recipe: DisplayManualRecipe;
@@ -23,7 +24,7 @@ const CardRecipeList = ({ recipe }: CardRecipeListProps) => {
       <img
         src={recipe.image}
         alt={recipe.title}
-        className="w-full h-80 object-cover"
+        className="w-full h-40 object-cover"
       />
       <CardContent className="relative p-4">
         <DropdownMenu>
@@ -58,7 +59,7 @@ const CardRecipeList = ({ recipe }: CardRecipeListProps) => {
         <p className="text-sm text-gray-600 dark:text-gray-400">
           {recipe.user.username}
         </p>
-        <div className="flex flex-wrap gap-2 mt-2 mb-16">
+        <div className="flex flex-wrap gap-2 mt-2 mb-6">
           {recipe.categories.length > 0 ? (
             recipe.categories.map((categoryObj) => (
               <Badge
@@ -73,12 +74,19 @@ const CardRecipeList = ({ recipe }: CardRecipeListProps) => {
             <div>Geen Recepten</div>
           )}
         </div>
-        <div className="absolute bottom-4 right-4 flex items-center space-x-2">
+        <div className="right-4 flex items-center space-x-2">
           <Timer className="h-6 w-6 text-gray-600 dark:text-gray-400" />
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            {recipe.totalTime} min
-          </p>
+            {recipe.totalTime} min (total time)
+            
+          </p> 
         </div>
+        <div className="right-4 flex items-center space-x-2">
+        <Utensils className="h-6 w-6 text-gray-600 dark:text-gray-400" />
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+            {recipe.servings} servings
+          </p> 
+        </div> 
       </CardContent>
     </Card>
   );

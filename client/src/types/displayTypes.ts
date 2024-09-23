@@ -22,4 +22,5 @@ export interface DisplayManualRecipe {
   preparationTime: number;
   totalTime: number;
   createdAt : string;
+  servings : string;
 }

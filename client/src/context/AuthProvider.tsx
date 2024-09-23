@@ -53,8 +53,7 @@ const useFetchUser = () => {
 };
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const { user, setUser, isAuthenticated, setIsAuthenticated, loading } =
-    useFetchUser();
+  const { user, setUser, isAuthenticated, setIsAuthenticated, loading } = useFetchUser();
 
   const logout = async () => {
     try {

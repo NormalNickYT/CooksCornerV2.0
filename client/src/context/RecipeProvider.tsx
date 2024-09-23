@@ -5,9 +5,10 @@ import React, {
   ReactNode,
 } from "react";
 import {
-  getAllUsersRecipes,
+  getRecipes,
   getUserRecipes,
 } from "@/services/api/recipeService";
+
 import { DisplayManualRecipe } from "@/types/displayTypes";
 
 interface RecipeContextType {
@@ -36,7 +37,7 @@ const RecipeProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchAllUsersRecipes = async () => {
     try {
-      const result = await getAllUsersRecipes();
+      const result = await getRecipes({});
       setRecipes(result);
     } catch (error) {
       console.error("Error fetching recipes:", error);

@@ -7,9 +7,41 @@ import {
 import axios from "axios";
 import {RecipeFilters} from "@/types/RecipeFilters";
 
-export const getAllUsersRecipes = async () => {
+export const getRecipes = async ({
+  recents = false,
+  popular = false,
+  limit = 30,
+  filters = {},
+}: {
+  recents?: boolean;
+  limit?: number;
+  filters?: RecipeFilters;
+  popular?: boolean;
+}) => {
   try {
-    const response = await axios.get(`/api/recipes/userrecipes`);
+    const params: any = {};
+
+    if (recents) {
+      params.recents = true;
+    }
+
+    if (popular) {
+      params.popular = true;
+    }
+
+    if (limit) {
+      params.limit = limit;
+    }
+
+    if (Object.keys(filters).length > 0) {
+      Object.assign(params, filters);
+    } 
+    const endpoint = `/api/recipes/userrecipes`;
+
+    const response = await axios.get(endpoint, {
+      params,
+    });
+
     const data = response.data;
 
     return data.map((recipe: ManualRecipe) => ({
@@ -22,25 +54,6 @@ export const getAllUsersRecipes = async () => {
   }
 };
 
-export const getRecentRecipes = async (limit : number) => {
-  try {
-    const response = await axios.get(`/api/recipes/userrecipes`, {
-      params: {
-        recents: true,
-        limit: limit,
-      },
-    });
-    const data = response.data;
-
-    return data.map((recipe: ManualRecipe) => ({
-      ...recipe,
-      image: `/uploads/${recipe.image}`,
-    }));
-  } catch (error) {
-    console.error("Error fetching recent recipes:", error);
-    throw error;
-  }
-};
 
 export const getUserRecipes = async (userId: number) => {
   try {
@@ -56,25 +69,6 @@ export const getUserRecipes = async (userId: number) => {
     throw error;
   }
 };
-
-export const getFilteredRecipes = async (filters: RecipeFilters) => { 
-  // TODO: Filter validation 
-  try {
-    const response = await axios.get(`/api/recipes/userrecipes`, {
-      params: filters,
-    });
-
-    const data = response.data;
-
-    return data.map((recipe: ManualRecipe) => ({
-      ...recipe,
-      image: `/uploads/${recipe.image}`,
-    }));
-  } catch (error) {
-    console.error("Error fetching recipes:", error);
-    throw error;
-  }
-}
 
 export const createManualRecipe = async (data: ManualRecipe) => {
   try {

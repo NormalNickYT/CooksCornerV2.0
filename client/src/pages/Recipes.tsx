@@ -7,47 +7,22 @@ import { Button } from "@/components/ui/button"
 import { SVGProps, useEffect, useState } from "react"
 import { JSX } from "react/jsx-runtime"
 import { BannerRecipe } from "@/components/home/BannerRecipe"
-import { getRecentRecipes } from "@/services/api/recipeService"
 import RecenteRecepten from "@/components/home/RecenteRecepten"
+import CardRecipeList from "@/components/CardRecipeList"
+import { getRecipes } from "@/services/api/recipeService"
+
 
 export const Recipes = () => {
-
-  const [recentRecipes, setRecentRecipes] = useState([]);
-  // TODO: Loading Component
-  const [loading, setLoading] = useState(true);
-  const limit = 4;
-
-  useEffect(() => {
-    const fetchRecentRecipes = async () => {
-      try {
-        const recipes = await getRecentRecipes(limit);
-        setRecentRecipes(recipes);
-      } catch (error) {
-        console.error("Error fetching recent recipes:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRecentRecipes();
-  }, []);
-
   return (
     <div>
     <BannerRecipe />
     <div className="container mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-[1fr_300px] gap-8 my-10">
       <div>
         <Tabs defaultValue="starters">
-          <TabsList className="flex gap-4 mb-4">
-            <TabsTrigger value="starters">Starters</TabsTrigger>
-            <TabsTrigger value="dinner">Dinner</TabsTrigger>
-            <TabsTrigger value="dessert">Dessert</TabsTrigger>
-            <TabsTrigger value="snacks">Snacks</TabsTrigger>
-          </TabsList>
           <TabsContent value="starters">
-            <p className="text-muted-foreground mb-4">You have 23 recipes to explore</p>
-            <RecenteRecepten recipes={recentRecipes} />
-           {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <p className="text-muted-foreground mb-4">You have COUNT HERE recipes to explore</p>
+            <h1 className="text-3xl lg:text-2xl font-bold mb-4"> CATEGORY NAME HERE </h1>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
              <Card>
                 <img
                   src="/placeholder.svg"
@@ -105,7 +80,7 @@ export const Recipes = () => {
                   </div>
                 </CardContent>
               </Card>
-            </div> */}
+            </div>
           </TabsContent>
           <TabsContent value="dinner">
             <p className="text-muted-foreground mb-4">You have 18 recipes to explore</p>
