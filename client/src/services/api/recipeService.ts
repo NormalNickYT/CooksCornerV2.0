@@ -5,6 +5,7 @@ import {
   URLRecipe,
 } from "@/schemas/Recipe";
 import axios from "axios";
+import {RecipeFilters} from "@/types/RecipeFilters";
 
 export const getAllUsersRecipes = async () => {
   try {
@@ -55,6 +56,25 @@ export const getUserRecipes = async (userId: number) => {
     throw error;
   }
 };
+
+export const getFilteredRecipes = async (filters: RecipeFilters) => { 
+  // TODO: Filter validation 
+  try {
+    const response = await axios.get(`/api/recipes/userrecipes`, {
+      params: filters,
+    });
+
+    const data = response.data;
+
+    return data.map((recipe: ManualRecipe) => ({
+      ...recipe,
+      image: `/uploads/${recipe.image}`,
+    }));
+  } catch (error) {
+    console.error("Error fetching recipes:", error);
+    throw error;
+  }
+}
 
 export const createManualRecipe = async (data: ManualRecipe) => {
   try {

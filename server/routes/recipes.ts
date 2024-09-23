@@ -48,7 +48,8 @@ router.get("/api/recipes/userrecipes", async (req: Request, res: Response) => {
   try {
     const filters: RecipeFilters = {
       name: req.query.name as string,
-      recents: req.query.recents === "true" ? true : undefined,
+      recents: req.query.recents === "true" ? true : false,
+      populair: req.query.recents === "true" ? true : false,
       sortBy: req.query.sortBy as "createdAt" | "title" | "totalTime",
       sortOrder: req.query.sortOrder as "asc" | "desc",
       limit: parseInt(req.query.limit as string) || 4,

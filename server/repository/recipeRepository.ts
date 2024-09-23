@@ -18,10 +18,11 @@ export class RecipeRepository {
     const {
       name,
       recents,
+      populair,
       sortBy,
       sortOrder,
-      limit = 3,
-      offset = 0,
+      limit,
+      offset,
       category,
       maxTotalTime,
       servings,
