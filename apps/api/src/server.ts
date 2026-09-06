@@ -1,89 +1,81 @@
-import express from "express";
-import routeRecipes from "./routes/recipes";
-import routeGoogleAuth from "./routes/googleAuth";
-import passport from "passport";
+import { RedisStore } from "connect-redis";
 import { createClient } from "redis";
-import RedisStore from "connect-redis";
-import fs from "fs";
-import path from "path";
-require("dotenv").config();
-require("./middleware/googleStrategy");
-const cors = require("cors");
-const session = require("express-session");
+import type { Store } from "express-session";
+import { createApp } from "./app";
+import { env } from "./core/env";
+import { logger } from "./core/logger";
+import { disconnectPrisma, prisma } from "./core/prisma";
 
-const app = express();
-const port = 5000;
+/**
+ * Sessions live in Redis when a URL is configured.
+ *
+ * Without a store, express-session keeps them in memory: fine for one dev
+ * process, but they vanish on restart and cannot be shared across instances.
+ * A configured-but-unreachable Redis is a hard failure rather than a silent
+ * fallback, so a broken production deploy is loud.
+ */
+async function createSessionStore(): Promise<Store | undefined> {
+  if (!env.REDIS_URL) {
+    logger.warn("REDIS_URL not set: sessions are stored in memory and will be lost on restart");
+    return undefined;
+  }
 
-let redisClient;
-let redisStore;
-let sessionOptions;
+  const client = createClient({
+    url: env.REDIS_URL,
+    socket: {
+      connectTimeout: 3000,
+      // Bounded retries. The default strategy retries forever, so an absent
+      // Redis meant the process never finished booting at all.
+      reconnectStrategy: (retries) => (retries > 2 ? false : 200 * (retries + 1)),
+    },
+  });
 
-const uploadDir = path.join(__dirname, "uploads");
+  // Registered before connect so a refused connection is handled, not thrown.
+  client.on("error", (error: Error) => logger.debug({ err: error }, "Redis connection error"));
 
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
+  try {
+    await client.connect();
+    logger.info("Connected to Redis");
+    return new RedisStore({ client, prefix: "cookscorner:sess:" });
+  } catch (error) {
+    // In production a configured Redis that will not connect is fatal.
+    if (env.isProduction) throw error;
+
+    // Locally, carry on without it. Destroy the client first, or its retry
+    // loop keeps the event loop alive and spams the log.
+    // node-redis v4 exposes disconnect(), not destroy().
+    await client.disconnect().catch(() => undefined);
+    logger.warn("Redis unavailable at " + env.REDIS_URL + ", using in-memory sessions instead");
+    return undefined;
+  }
 }
 
-// Configure Redis only if not in development
-if (process.env.NODE_ENV !== "development") {
-  redisClient = createClient({
-    url: process.env.REDIS_URL,
+async function main(): Promise<void> {
+  // Fail fast on a bad DATABASE_URL rather than on the first request.
+  await prisma.$queryRaw`SELECT 1`;
+  logger.info("Connected to the database");
+
+  const app = createApp({ sessionStore: await createSessionStore() });
+
+  const server = app.listen(env.PORT, () => {
+    logger.info(`API listening on ${env.API_URL} (${env.NODE_ENV})`);
   });
 
-  redisClient.connect().catch(console.error);
-
-  redisClient.on("error", (err: Error) => {
-    console.error("Could not establish a connection with Redis. " + err);
-  });
-
-  redisClient.on("connect", () => {
-    console.log("Connected to Redis successfully");
-  });
-
-  redisStore = new RedisStore({ client: redisClient });
-
-  sessionOptions = {
-    store: redisStore,
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: true,
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    },
+  // Finish in-flight requests before exiting, so a deploy does not drop them.
+  const shutdown = (signal: string) => {
+    logger.info({ signal }, "Shutting down");
+    server.close(async () => {
+      await disconnectPrisma();
+      process.exit(0);
+    });
+    setTimeout(() => process.exit(1), 10_000).unref();
   };
-} else {
-  sessionOptions = {
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: false,
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    },
-  };
+
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
 }
 
-app.use(express.json());
-app.use(session(sessionOptions));
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use(
-  cors({
-    origin: `${process.env.CLIENT_URL_DEV}`,
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true,
-  })
-);
-
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-app.use("/", routeRecipes);
-app.use("/", routeGoogleAuth);
-
-app.listen(port, () => {
-  console.log(`Server Started On: ${port}`);
+main().catch((error) => {
+  logger.error({ err: error }, "Failed to start the API");
+  process.exit(1);
 });

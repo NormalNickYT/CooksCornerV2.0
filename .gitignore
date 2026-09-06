@@ -17,3 +17,6 @@ apps/api/uploads/
 !.vscode/extensions.json
 *.log
 npm-debug.log*
+
+# Local PostgreSQL cluster (embedded-postgres, Docker-free fallback)
+apps/api/.pgdata/

@@ -7,7 +7,7 @@
  * mean two different things in two different places.
  */
 
-import { formatAmount } from "./quantity";
+import { formatAmount, snapAmount } from "./quantity";
 import { findUnit, ladderFor, unitLabel, type UnitDef } from "./units";
 
 export interface ScalableIngredient {
@@ -73,11 +73,12 @@ function normalise(amount: number, unit: UnitDef): { amount: number; unit: UnitD
   }
 
   const ladder = ladderFor(unit);
-  if (ladder.length === 0) return { amount, unit, converted: false };
+  const smallest = ladder[0];
+  if (!smallest) return { amount, unit, converted: false };
 
   const inBase = amount * unit.factor;
   // Largest unit that still leaves a number of at least 1.
-  let best = ladder[0];
+  let best = smallest;
   for (const candidate of ladder) {
     if (inBase / candidate.factor >= 1) best = candidate;
   }
@@ -94,14 +95,14 @@ export function scaleIngredient(
 ): ScaledIngredient {
   const unit = findUnit(ingredient.unit);
 
-  // "Snufje zout" times four is still a snufje.
-  const locked =
-    ingredient.scalable === false ||
-    unit?.kind === "free" ||
+  // "Snufje zout" times four is still a snufje. Written inline rather than as
+  // a `locked` boolean so the compiler narrows `amount` for the code below.
+  if (
     ingredient.amount === null ||
-    ingredient.amount === undefined;
-
-  if (locked) {
+    ingredient.amount === undefined ||
+    ingredient.scalable === false ||
+    unit?.kind === "free"
+  ) {
     return {
       ...ingredient,
       rawAmount: ingredient.amount ?? null,
@@ -132,16 +133,18 @@ export function scaleIngredient(
 
   const { amount, unit: finalUnit, converted } = normalise(raw, unit);
 
+  // Metric units are decimal by design: "1,5 kg", not "1½ kg".
+  const fractions = !finalUnit.ladder;
+  // Round once, then use that same value for both the number and the unit
+  // label. Reading the label off the unrounded amount printed "1 stuks",
+  // because 0.75 is not 1 even though it displays as one.
+  const displayed = snapAmount(amount, { discrete: finalUnit.discrete, fractions });
+
   return {
     ...ingredient,
     rawAmount: raw,
-    displayAmount: formatAmount(amount, {
-      locale,
-      discrete: finalUnit.discrete,
-      // Metric units are decimal by design: "1,5 kg", not "1½ kg".
-      fractions: !finalUnit.ladder,
-    }),
-    displayUnit: unitLabel(finalUnit, amount),
+    displayAmount: formatAmount(displayed, { locale, discrete: finalUnit.discrete, fractions }),
+    displayUnit: unitLabel(finalUnit, displayed),
     converted,
     wasScaled: true,
   };

@@ -1,65 +1,81 @@
-import prisma from "../prisma/prisma";
 import passport from "passport";
+import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { User as PrismaUser } from "@prisma/client";
+import { env } from "../../core/env";
+import { logger } from "../../core/logger";
+import { authRepository } from "./auth.repository";
+import { authService } from "./auth.service";
 
-const clientID = process.env.CLIENTID;
-const clientSecret = process.env.CLIENTSECRET;
-const callbackURL = process.env.CALLBACKURL;
-
-if (!clientID || !clientSecret || !callbackURL) {
-  throw new Error("Missing required environment variables");
-}
+/**
+ * Passport wiring.
+ *
+ * Two ways in, one session model: whichever strategy succeeds, the session
+ * stores nothing but the user id and every request re-reads the user from the
+ * database. That way a deleted or renamed account takes effect immediately
+ * instead of living on inside a signed cookie.
+ */
 
 passport.use(
-  new GoogleStrategy(
-    {
-      clientID: clientID,
-      clientSecret: clientSecret,
-      callbackURL: callbackURL,
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        const alreadyUser = await prisma.user.findFirst({
-          where: {
-            googleId: profile.id,
-          },
-        });
-        if (alreadyUser) {
-          return done(null, alreadyUser);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-      try {
-        const newUser = await prisma.user.create({
-          data: {
-            username: profile.displayName,
-            googleId: profile.id,
-            email: profile.emails?.[0].value || "",
-            name: profile.displayName,
-            avatar: profile.photos?.[0].value || "",
-          },
-        });
-        return done(null, newUser);
-      } catch (error: any) {
-        console.error("Error during Google authentication:", error);
-        return done(error);
-      }
+  new LocalStrategy({ usernameField: "email", passwordField: "password" }, async (email, password, done) => {
+    try {
+      const user = await authService.verifyCredentials(email, password);
+      done(null, user);
+    } catch {
+      // Deliberately vague: never confirm whether the email exists.
+      done(null, false, { message: "E-mailadres of wachtwoord klopt niet" });
     }
-  )
+  }),
 );
 
-passport.serializeUser((user: PrismaUser, done) => {
-  done(null, user.id);
+if (env.googleEnabled) {
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: env.GOOGLE_CLIENT_ID!,
+        clientSecret: env.GOOGLE_CLIENT_SECRET!,
+        callbackURL: env.GOOGLE_CALLBACK_URL!,
+      },
+      async (_accessToken, _refreshToken, profile, done) => {
+        try {
+          const email = profile.emails?.[0]?.value;
+          if (!email) {
+            done(null, false, { message: "Google gaf geen e-mailadres terug" });
+            return;
+          }
+
+          const user = await authService.findOrCreateGoogleUser({
+            googleId: profile.id,
+            email,
+            name: profile.displayName || email.split("@")[0]!,
+            avatar: profile.photos?.[0]?.value ?? null,
+          });
+
+          done(null, user);
+        } catch (error) {
+          // The old version swallowed this and carried on to create a
+          // duplicate account. Fail the login instead.
+          logger.error({ err: error }, "Google authentication failed");
+          done(error as Error);
+        }
+      },
+    ),
+  );
+  logger.info("Google OAuth enabled");
+} else {
+  logger.warn("Google OAuth disabled: set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET and GOOGLE_CALLBACK_URL to enable it");
+}
+
+passport.serializeUser<string>((user, done) => {
+  done(null, (user as Express.User).id);
 });
 
-passport.deserializeUser(async function (id: string, cb) {
+passport.deserializeUser<string>(async (id, done) => {
   try {
-    const user = await prisma.user.findUnique({ where: { id } });
-    return cb(null, user);
-  } catch (err) {
-    return cb(err);
+    const user = await authRepository.findById(id);
+    // A null user clears the session rather than throwing on every request.
+    done(null, user ?? false);
+  } catch (error) {
+    done(error as Error);
   }
 });
 

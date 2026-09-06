@@ -158,3 +158,15 @@ describe("scaleRecipe", () => {
     expect(scaled[0]!.rawAmount).toBe(62.5);
   });
 });
+
+describe("unit labels agree with the rounded amount", () => {
+  it("says 'stuk', not 'stuks', when half a lettuce rounds up to one", () => {
+    const result = scaleIngredient(ingredient({ name: "ijsbergsla", amount: 0.5, unit: "stuk" }), 1.5);
+    expect(formatIngredientLine(result)).toBe("1 stuk ijsbergsla");
+  });
+
+  it("pluralises once the rounded amount really is more than one", () => {
+    const result = scaleIngredient(ingredient({ name: "ui", amount: 1, unit: "stuk" }), 1.5);
+    expect(formatIngredientLine(result)).toBe("1½ stuks ui");
+  });
+});

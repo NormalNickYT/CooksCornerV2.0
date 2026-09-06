@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/server.js",
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "dotenv -e ../../.env -- tsx prisma/seed.ts"
   },
   "scripts": {
     "dev": "tsx watch --clear-screen=false src/server.ts",
@@ -14,12 +14,13 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:deploy": "prisma migrate deploy",
-    "db:reset": "prisma migrate reset --force",
-    "db:seed": "tsx prisma/seed.ts",
-    "db:studio": "prisma studio",
-    "postinstall": "prisma generate"
+    "db:migrate": "dotenv -e ../../.env -- prisma migrate dev",
+    "db:deploy": "dotenv -e ../../.env -- prisma migrate deploy",
+    "db:reset": "dotenv -e ../../.env -- prisma migrate reset --force",
+    "db:seed": "dotenv -e ../../.env -- tsx prisma/seed.ts",
+    "db:studio": "dotenv -e ../../.env -- prisma studio",
+    "postinstall": "prisma generate",
+    "db:local": "tsx scripts/local-db.ts"
   },
   "dependencies": {
     "@cookscorner/shared": "*",
@@ -52,6 +53,8 @@
     "@types/passport-google-oauth20": "^2.0.16",
     "@types/passport-local": "^1.0.38",
     "@types/supertest": "^6.0.2",
+    "dotenv-cli": "^11.0.0",
+    "embedded-postgres": "^18.4.0-beta.17",
     "pino-pretty": "^13.0.0",
     "prisma": "^6.2.1",
     "supertest": "^7.0.0",
