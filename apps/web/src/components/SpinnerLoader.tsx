@@ -1,15 +1,16 @@
-import { RotatingLines } from "react-loader-spinner";
+import { cn } from "@/lib/utils";
 
-export default function SpinnerLoader() {
+interface SpinnerLoaderProps {
+  className?: string;
+  label?: string;
+}
+
+/** A plain CSS spinner, so loading state costs no extra dependency. */
+export default function SpinnerLoader({ className, label = "Laden..." }: SpinnerLoaderProps) {
   return (
-    <div className="flex justify-center items-center h-screen">
-      <RotatingLines
-        strokeColor="grey"
-        strokeWidth="5"
-        animationDuration="0.75"
-        width="96"
-        visible={true}
-      />
+    <div className={cn("flex min-h-64 items-center justify-center py-16", className)} role="status">
+      <span className="h-10 w-10 animate-spin rounded-full border-4 border-muted border-t-primary" />
+      <span className="sr-only">{label}</span>
     </div>
   );
 }

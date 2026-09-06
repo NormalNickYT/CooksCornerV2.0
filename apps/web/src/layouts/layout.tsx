@@ -1,16 +1,18 @@
+import { Outlet } from "react-router-dom";
 import { Footer } from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
-type Props = {
-  children: React.ReactNode;
-};
+interface LayoutProps {
+  /** Optional: routes render through <Outlet />, one-offs can pass children. */
+  children?: React.ReactNode;
+}
 
-export const Layout = ({ children }: Props) => {
-  return (
-    <div className="flex flex-col min-h-screen dark:bg-dark-background">
-      <Navbar />
-      <main className="flex-1 w-full">{children}</main>
-      <Footer />
-    </div>
-  );
-};
+export const Layout = ({ children }: LayoutProps) => (
+  <div className="flex min-h-screen flex-col dark:bg-dark-background">
+    <Navbar />
+    <main className="w-full flex-1">{children ?? <Outlet />}</main>
+    <Footer />
+  </div>
+);
+
+export default Layout;

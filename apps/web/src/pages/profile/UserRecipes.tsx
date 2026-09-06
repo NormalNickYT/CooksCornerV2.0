@@ -1,181 +1,93 @@
-import { ListFilter, PlusCircle } from "lucide-react";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import SpinnerLoader from "@/components/SpinnerLoader";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Link, useNavigate } from "react-router-dom";
-import { DashHeader } from "../../components/profile/DashHeader";
-import { deleteRecipe } from "@/services/api/recipeService";
-import UserRecipesList from "@/components/profile/UserRecipeList";
-import CookingWoman from "../../assets/img/cooking-woman.png";
-import { useRecipes } from "@/context/RecipeProvider";
-import { useEffect, useState } from "react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Terminal } from "lucide-react";
-import { useAuth } from "@/context/AuthProvider";
+import { RecipeCard } from "@/features/recipes/components/RecipeCard";
+import { useMyRecipes } from "@/features/recipes/useRecipes";
+import { errorMessage } from "@/lib/api";
+import CookingWoman from "@/assets/img/cooking-woman.png";
 
-export const UserRecipes = () => {
-  const { userRecipes, fetchUserRecipes } = useRecipes();
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const [showAlert, setShowAlert] = useState(false);
-  const [deletedRecipeTitle, setDeletedRecipeTitle] = useState<string | null>(
-    null,
-  );
+const TABS = [
+  { value: "all", label: "Alles" },
+  { value: "active", label: "Gepubliceerd" },
+  { value: "draft", label: "Concept" },
+  { value: "archived", label: "Archief" },
+] as const;
 
-  const handleDeleteRecipe = async (recipeId: string) => {
-    try {
-      const recipe = userRecipes.find((r) => r.id === recipeId);
-      await deleteRecipe(recipeId);
+export default function UserRecipes() {
+  const [tab, setTab] = useState<string>("all");
+  const { data, isLoading, error } = useMyRecipes({ limit: 50 });
 
-      if (user !== null && user.id !== undefined) {
-        fetchUserRecipes(user.id);
-      }
+  if (isLoading) return <SpinnerLoader />;
 
-      // TODO: We use this alert multiple times maybe make this a specific component
-      setShowAlert(true);
-      setDeletedRecipeTitle(recipe?.title || "");
-      setTimeout(() => setShowAlert(false), 3000);
-    } catch (error) {
-      console.error("Error deleting recipe:", error);
-    }
-  };
+  if (error) {
+    return (
+      <p className="rounded-md bg-destructive/10 p-4 text-destructive">
+        {errorMessage(error, "Je recepten laden is niet gelukt")}
+      </p>
+    );
+  }
 
-  const handleNavigateAddRecipe = () => {
-    navigate("/dashboard/add-recipe");
-  };
+  const all = data?.items ?? [];
 
-  useEffect(() => {
-    if (user !== null && user.id !== undefined) {
-      fetchUserRecipes(user.id);
-    }
-  }, []);
+  if (all.length === 0) {
+    return (
+      <Card className="mx-auto max-w-xl">
+        <CardHeader className="text-center">
+          <CardTitle>Je hebt nog geen recepten</CardTitle>
+          <CardDescription>Voeg je eerste recept toe.</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center gap-6">
+          <img src={CookingWoman} alt="" className="max-h-64 object-contain" />
+          <Button asChild size="lg">
+            <Link to="/dashboard/add-recipe">Recept toevoegen</Link>
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
-    <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14 dark:bg-dark-background">
-      <DashHeader />
-      <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 ">
-        <Tabs defaultValue="all">
-          {userRecipes.length > 0 && (
-            <div className="flex items-center">
-              <TabsList className="dark:bg-dark-text5">
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="active">Active</TabsTrigger>
-                <TabsTrigger value="draft">Draft</TabsTrigger>
-                <TabsTrigger value="archived" className="hidden sm:flex">
-                  Archived
-                </TabsTrigger>
-              </TabsList>
-              <div className="ml-auto flex items-center gap-2 ">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-8 gap-1">
-                      <ListFilter className="h-3.5 w-3.5" />
-                      <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                        Filter
-                      </span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuCheckboxItem checked>
-                      Active
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem>
-                      Archived
-                    </DropdownMenuCheckboxItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                <Button variant="outline" size="sm" className="h-8 gap-1">
-                  <PlusCircle className="h-3.5 w-3.5" />
-                  <Link to="/dashboard/add-recipe">
-                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                      Add Recipe
-                    </span>
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          )}
-          <TabsContent value="all">
-            <Card x-chunk="dashboard-06-chunk-0">
-              {userRecipes.length > 0 && (
-                <CardHeader>
-                  <CardTitle className="font-bold">Recepten</CardTitle>
-                  <CardDescription>Beheer je recepten</CardDescription>
-                </CardHeader>
-              )}
-              <CardContent>
-                <div className="w-full items-center justify-center flex py-16 flex-col space-y-10">
-                  {userRecipes.length === 0 ? (
-                    <div className="text-center">
-                      <h2 className="text-lg font-bold">
-                        Je hebt nog geen recepten
-                      </h2>
-                      <p className="text-sm text-muted-foreground">
-                        Voeg een recept toe
-                      </p>
-                      <img
-                        src={CookingWoman}
-                        className="max-w-sm max-h-80 mx-auto object-contain"
-                        alt="Food Logo"
-                      />
-                      <Button
-                        type="submit"
-                        onClick={handleNavigateAddRecipe}
-                        className="bg-dark-primary text-lg font-bold text-white my-5"
-                      >
-                        Voeg Recept Toe
-                      </Button>
-                    </div>
-                  ) : (
-                    <UserRecipesList
-                      recipes={userRecipes}
-                      onDelete={handleDeleteRecipe}
-                    />
-                  )}
+    <div className="mx-auto w-full max-w-6xl">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-2xl font-bold tracking-tight">Mijn recepten</h1>
+        <Button asChild className="gap-1.5">
+          <Link to="/dashboard/add-recipe">
+            <Plus className="h-4 w-4" />
+            Recept toevoegen
+          </Link>
+        </Button>
+      </div>
+
+      <Tabs value={tab} onValueChange={setTab}>
+        <TabsList>
+          {TABS.map((item) => (
+            <TabsTrigger key={item.value} value={item.value}>
+              {item.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        {TABS.map((item) => {
+          const visible = item.value === "all" ? all : all.filter((r) => r.status === item.value);
+          return (
+            <TabsContent key={item.value} value={item.value} className="mt-6">
+              {visible.length === 0 ? (
+                <p className="py-12 text-center text-muted-foreground">Niets in deze categorie.</p>
+              ) : (
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {visible.map((recipe) => (
+                    <RecipeCard key={recipe.id} recipe={recipe} />
+                  ))}
                 </div>
-                {showAlert && (
-                  <div className="fixed bottom-4 right-4 z-50">
-                    <Alert className="bg-dark-primary">
-                      <Terminal className="h-4 w-4" />
-                      <AlertTitle>Success!</AlertTitle>
-                      <AlertDescription>
-                        {deletedRecipeTitle} deleted
-                      </AlertDescription>
-                    </Alert>
-                  </div>
-                )}
-              </CardContent>
-              <CardFooter>
-                {userRecipes.length > 0 && (
-                  <div className="text-xs text-muted-foreground">
-                    Showing <strong>1-10</strong> of{" "}
-                    <strong>{userRecipes.length}</strong> products
-                  </div>
-                )}
-              </CardFooter>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </main>
+              )}
+            </TabsContent>
+          );
+        })}
+      </Tabs>
     </div>
   );
-};
-export default UserRecipes;
+}

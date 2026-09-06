@@ -38,6 +38,8 @@
     "@embedded-postgres/windows-x64@18.4.0-beta.17": true,
     "esbuild@0.28.2": true,
     "esbuild@0.21.5": true,
-    "esbuild@0.25.12": true
+    "esbuild@0.25.12": true,
+    "@prisma/engines@6.19.3": true,
+    "prisma@6.19.3": true
   }
 }

@@ -1,270 +1,233 @@
+import { Search, SlidersHorizontal } from "lucide-react";
+import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import SpinnerLoader from "@/components/SpinnerLoader";
+import { badgeVariants } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { RecipeCard } from "@/features/recipes/components/RecipeCard";
+import { useCategories, useRecipeList } from "@/features/recipes/useRecipes";
+import type { RecipeListParams } from "@/features/recipes/recipe.api";
+import { errorMessage } from "@/lib/api";
+import { cn } from "@/lib/utils";
 
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { SVGProps, useEffect, useState } from "react"
-import { JSX } from "react/jsx-runtime"
-import { BannerRecipe } from "@/components/home/BannerRecipe"
-import RecenteRecepten from "@/components/home/RecenteRecepten"
-import CardRecipeList from "@/components/CardRecipeList"
-import { getRecipes } from "@/services/api/recipeService"
+const SORT_OPTIONS: Array<{ value: string; label: string; params: Partial<RecipeListParams> }> = [
+  { value: "newest", label: "Nieuwste eerst", params: { sortBy: "createdAt", sortOrder: "desc" } },
+  { value: "title", label: "Op titel", params: { sortBy: "title", sortOrder: "asc" } },
+  { value: "quickest", label: "Snelst klaar", params: { sortBy: "totalTime", sortOrder: "asc" } },
+];
 
+const TIME_OPTIONS = [
+  { value: "all", label: "Maakt niet uit" },
+  { value: "15", label: "Binnen 15 min" },
+  { value: "30", label: "Binnen 30 min" },
+  { value: "60", label: "Binnen een uur" },
+];
 
-export const Recipes = () => {
+const PAGE_SIZE = 12;
+
+/**
+ * Browse every published recipe.
+ *
+ * This page used to render a hardcoded mock ("Caprese Salad", "COUNT HERE")
+ * and never called the API. Filters live in the URL, so a filtered view can
+ * be bookmarked and shared.
+ */
+export default function Recipes() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchDraft, setSearchDraft] = useState(searchParams.get("search") ?? "");
+
+  const category = searchParams.get("category") ?? "all";
+  const sort = searchParams.get("sort") ?? "newest";
+  const maxTime = searchParams.get("time") ?? "all";
+  const page = Math.max(0, Number(searchParams.get("page") ?? 0));
+
+  const params = useMemo<RecipeListParams>(() => {
+    const sortParams = SORT_OPTIONS.find((option) => option.value === sort)?.params ?? {};
+    return {
+      ...sortParams,
+      search: searchParams.get("search") || undefined,
+      category: category === "all" ? undefined : category,
+      maxTotalTime: maxTime === "all" ? undefined : Number(maxTime),
+      limit: PAGE_SIZE,
+      offset: page * PAGE_SIZE,
+    };
+  }, [searchParams, category, sort, maxTime, page]);
+
+  const { data, isLoading, isFetching, error } = useRecipeList(params);
+  const { data: categories } = useCategories();
+
+  /** Any filter change resets to the first page. */
+  const setFilter = (key: string, value: string) => {
+    const next = new URLSearchParams(searchParams);
+    if (value === "" || value === "all") next.delete(key);
+    else next.set(key, value);
+    next.delete("page");
+    setSearchParams(next, { replace: true });
+  };
+
+  const goToPage = (nextPage: number) => {
+    const next = new URLSearchParams(searchParams);
+    if (nextPage <= 0) next.delete("page");
+    else next.set("page", String(nextPage));
+    setSearchParams(next);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <div>
-    <BannerRecipe />
-    <div className="container mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-[1fr_300px] gap-8 my-10">
-      <div>
-        <Tabs defaultValue="starters">
-          <TabsContent value="starters">
-            <p className="text-muted-foreground mb-4">You have COUNT HERE recipes to explore</p>
-            <h1 className="text-3xl lg:text-2xl font-bold mb-4"> CATEGORY NAME HERE </h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-             <Card>
-                <img
-                  src="/placeholder.svg"
-                  alt="Recipe 1"
-                  width={300}
-                  height={200}
-                  className="rounded-t-lg object-cover w-full h-48"
-                  style={{ aspectRatio: "300/200", objectFit: "cover" }}
-                />
-                <CardContent className="p-4">
-                  <h3 className="text-lg font-semibold mb-2">Caprese Salad</h3>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <ClockIcon className="w-4 h-4" />
-                    <span>15 min</span>
-                    <UserIcon className="w-4 h-4" />
-                    <span>2 servings</span>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <img
-                  src="/placeholder.svg"
-                  alt="Recipe 2"
-                  width={300}
-                  height={200}
-                  className="rounded-t-lg object-cover w-full h-48"
-                  style={{ aspectRatio: "300/200", objectFit: "cover" }}
-                />
-                <CardContent className="p-4">
-                  <h3 className="text-lg font-semibold mb-2">Grilled Salmon</h3>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <ClockIcon className="w-4 h-4" />
-                    <span>30 min</span>
-                    <UserIcon className="w-4 h-4" />
-                    <span>4 servings</span>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <img
-                  src="/placeholder.svg"
-                  alt="Recipe 3"
-                  width={300}
-                  height={200}
-                  className="rounded-t-lg object-cover w-full h-48"
-                  style={{ aspectRatio: "300/200", objectFit: "cover" }}
-                />
-                <CardContent className="p-4">
-                  <h3 className="text-lg font-semibold mb-2">Chocolate Mousse</h3>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <ClockIcon className="w-4 h-4" />
-                    <span>45 min</span>
-                    <UserIcon className="w-4 h-4" />
-                    <span>6 servings</span>
-                  </div>
-                </CardContent>
-              </Card>
+    <div className="container mx-auto grid gap-8 px-4 py-10 md:grid-cols-[1fr_18rem] md:px-6">
+      <div className="md:order-1">
+        <form
+          className="mb-6 flex gap-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            setFilter("search", searchDraft.trim());
+          }}
+        >
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Label htmlFor="recipe-search" className="sr-only">
+              Zoek een recept
+            </Label>
+            <Input
+              id="recipe-search"
+              value={searchDraft}
+              onChange={(event) => setSearchDraft(event.target.value)}
+              placeholder="Zoek op titel of beschrijving"
+              className="pl-9"
+            />
+          </div>
+          <Button type="submit">Zoeken</Button>
+        </form>
+
+        {isLoading ? (
+          <SpinnerLoader />
+        ) : error ? (
+          <p className="rounded-md bg-destructive/10 p-4 text-destructive">
+            {errorMessage(error, "Recepten laden is niet gelukt")}
+          </p>
+        ) : !data || data.items.length === 0 ? (
+          <div className="rounded-lg border border-dashed py-20 text-center">
+            <h2 className="text-lg font-semibold">Geen recepten gevonden</h2>
+            <p className="mt-1 text-muted-foreground">Probeer een andere zoekterm of filter.</p>
+          </div>
+        ) : (
+          <>
+            <p className="mb-4 text-sm text-muted-foreground">
+              {data.total} {data.total === 1 ? "recept" : "recepten"} gevonden
+            </p>
+
+            <div
+              className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+              aria-busy={isFetching}
+            >
+              {data.items.map((recipe) => (
+                <RecipeCard key={recipe.id} recipe={recipe} />
+              ))}
             </div>
-          </TabsContent>
-          <TabsContent value="dinner">
-            <p className="text-muted-foreground mb-4">You have 18 recipes to explore</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" />
-          </TabsContent>
-          <TabsContent value="dessert">
-            <p className="text-muted-foreground mb-4">You have 12 recipes to explore</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" />
-          </TabsContent>
-          <TabsContent value="snacks">
-            <p className="text-muted-foreground mb-4">You have 8 recipes to explore</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" />
-          </TabsContent>
-        </Tabs>
-      </div>
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Filters</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="categories" className="mb-2">
-                Categories
-              </Label>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="w-full justify-between">
-                    Select categories
-                    <ChevronDownIcon className="w-4 h-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-full">
-                  <DropdownMenuCheckboxItem>Starters</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Dinner</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Dessert</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Snacks</DropdownMenuCheckboxItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <div>
-              <Label htmlFor="prep-time" className="mb-2">
-                Prep Time
-              </Label>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="w-full justify-between">
-                    Select prep time
-                    <ChevronDownIcon className="w-4 h-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-full">
-                  <DropdownMenuCheckboxItem>Less than 15 min</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Less than 30 min</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Less than 45 min</DropdownMenuCheckboxItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <div>
-              <Label htmlFor="total-time" className="mb-2">
-                Total Time
-              </Label>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="w-full justify-between">
-                    Select total time
-                    <ChevronDownIcon className="w-4 h-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-full">
-                  <DropdownMenuCheckboxItem>Less than 15 min</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Less than 30 min</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Less than 45 min</DropdownMenuCheckboxItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <div>
-              <Label htmlFor="servings" className="mb-2">
-                Servings
-              </Label>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="w-full justify-between">
-                    Select servings
-                    <ChevronDownIcon className="w-4 h-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-full">
-                  <DropdownMenuCheckboxItem>1</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>2</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>3</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>4</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>6</DropdownMenuCheckboxItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Sort By</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full justify-between">
-                  Newest
-                  <ChevronDownIcon className="w-4 h-4" />
+
+            {(page > 0 || data.hasMore) && (
+              <div className="mt-8 flex items-center justify-center gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => goToPage(page - 1)}
+                  disabled={page === 0 || isFetching}
+                >
+                  Vorige
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-full">
-                <DropdownMenuRadioGroup value="newest">
-                  <DropdownMenuRadioItem value="newest">Newest</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="name">Name</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="total-time">Total Time (Shortest)</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="prep-time">Prep Time (Shortest)</DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                <span className="text-sm text-muted-foreground">Pagina {page + 1}</span>
+                <Button
+                  variant="outline"
+                  onClick={() => goToPage(page + 1)}
+                  disabled={!data.hasMore || isFetching}
+                >
+                  Volgende
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      <aside className="space-y-4 md:order-2">
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <SlidersHorizontal className="h-4 w-4" />
+              Filters
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="grid gap-2">
+              <Label htmlFor="sort">Sorteren</Label>
+              <Select value={sort} onValueChange={(value) => setFilter("sort", value)}>
+                <SelectTrigger id="sort">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {SORT_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="time">Totale tijd</Label>
+              <Select value={maxTime} onValueChange={(value) => setFilter("time", value)}>
+                <SelectTrigger id="time">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {TIME_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid gap-2">
+              <span className="text-sm font-medium">Categorie</span>
+              <div className="flex flex-wrap gap-1.5">
+                {/* Buttons rather than <Badge asChild>: a filter is an action,
+                    and this keeps it keyboard-operable. */}
+                <button
+                  type="button"
+                  onClick={() => setFilter("category", "all")}
+                  className={cn(badgeVariants({ variant: category === "all" ? "default" : "outline" }))}
+                  aria-pressed={category === "all"}
+                >
+                  Alles
+                </button>
+                {categories?.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setFilter("category", item.slug)}
+                    className={cn(badgeVariants({ variant: category === item.slug ? "default" : "outline" }))}
+                    aria-pressed={category === item.slug}
+                  >
+                    {item.title} ({item.recipeCount})
+                  </button>
+                ))}
+              </div>
+            </div>
           </CardContent>
         </Card>
-      </div>
+      </aside>
     </div>
-    </div>
-  )
-}
-
-function ChevronDownIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m6 9 6 6 6-6" />
-    </svg>
-  )
-}
-
-
-function ClockIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <polyline points="12 6 12 12 16 14" />
-    </svg>
-  )
-}
-
-
-function UserIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  )
+  );
 }

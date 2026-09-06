@@ -1,36 +1,27 @@
-import path from "path";
+import path from "node:path";
 import react from "@vitejs/plugin-react";
-import { defineConfig, loadEnv } from "vite";
-import dotenv from "dotenv";
+// vitest/config re-exports Vite's defineConfig with the `test` key added.
+import { defineConfig } from "vitest/config";
 
-dotenv.config(); // load env vars from .env
-
-export default ({ mode }) => {
-  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
-
-  return defineConfig({
-    server: {
-      proxy: {
-        "/api": {
-          target: "http://localhost:5000",
-          secure: false,
-          changeOrigin: true,
-        },
-        "/uploads": {
-          target: "http://localhost:5000",
-          secure: false,
-          changeOrigin: true,
-        },
-      },
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      "@": path.resolve(import.meta.dirname, "./src"),
     },
-    plugins: [react()],
-    resolve: {
-      alias: {
-        "@": path.resolve(__dirname, "./src"),
-      },
+  },
+  server: {
+    port: 5173,
+    proxy: {
+      // Same-origin in development, so session cookies just work and there is
+      // no CORS preflight on every request.
+      "/api": { target: "http://localhost:5000", changeOrigin: true },
+      "/uploads": { target: "http://localhost:5000", changeOrigin: true },
     },
-    define: {
-      __SERVER_URL__: `"${process.env.SERVER_URL_DEV}"`,
-    },
-  });
-};
+  },
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: ["./src/test/setup.ts"],
+  },
+});

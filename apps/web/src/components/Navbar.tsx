@@ -1,8 +1,8 @@
+import { LayoutDashboard, ListPlus, LogOut, Menu, NotebookPen, X } from "lucide-react";
 import { useState } from "react";
-import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
-import { Link, NavLink, To, useNavigate } from "react-router-dom";
-import Switcher from "./ui/switcher";
-import { useAuth } from "@/context/AuthProvider";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,171 +10,173 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
-import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
+} from "@/components/ui/dropdown-menu";
+import { useCurrentUser, useLogout } from "@/features/auth/useAuth";
+import { cn } from "@/lib/utils";
+import Switcher from "./ui/switcher";
 
-const Navbar = () => {
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-  const { isAuthenticated, logout, user } = useAuth();
+const NAV_ITEMS = [
+  { to: "/", label: "Home", end: true },
+  { to: "/recipes", label: "Recepten", end: false },
+];
+
+/** Initials for the avatar fallback, so it is never a generic placeholder. */
+function initials(name: string): string {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
+export default function Navbar() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { user, isAuthenticated } = useCurrentUser();
+  const logout = useLogout();
   const navigate = useNavigate();
 
-  const handleNav = () => {
-    setMobileDrawerOpen(!mobileDrawerOpen);
-  };
-
   const handleLogout = async () => {
-    await logout();
+    await logout.mutateAsync();
     navigate("/login", { replace: true });
   };
 
-  const handleNavigation =
-    (path: string) => (event: React.MouseEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      navigate(path);
-    };
-
-  const navItems = [
-    { id: 1, text: "Home" },
-    { id: 2, text: "Categories" },
-  ];
-
   return (
-    <nav className="md:px-20 sm:px-20 top-0 z-50 backdrop-blur-lg text-text dark:bg-dark-background border-b">
-      <div className="px-4 mx-auto lg:text-sm">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center flex-shrink-0">
-            <h1 className="w-full text-2xl font-bold dark:text-dark-text">
-              CooksCorner
-            </h1>
-          </div>
-          <ul className="hidden lg:flex ml-14 space-x-12 items-center font-semibold">
-            {navItems.map((item) => (
-              <li
-                key={item.id}
-                className={`p-4 m-2 text-light-text text-lg dark:text-dark-text underline-wavy-hotpink`}
-              >
-                {item.text === "Home" ? (
-                  <NavLink
-                    to="/"
-                    className={({ isActive }) =>
-                      isActive ? "text-dark-accent" : ""
-                    }
-                  >
-                    Home
-                  </NavLink>
-                ) : (
-                  <NavLink
-                    to={"/" + item.text}
-                    className={({ isActive }) =>
-                      isActive ? "text-dark-accent font-bold" : ""
-                    }
-                  >
-                    {item.text}
-                  </NavLink>
-                )}
+    <nav className="sticky top-0 z-50 border-b backdrop-blur-lg dark:bg-dark-background/90">
+      <div className="mx-auto flex items-center justify-between px-4 md:px-20">
+        <div className="flex items-center gap-10">
+          <Link to="/" className="text-2xl font-bold dark:text-dark-text">
+            CooksCorner
+          </Link>
+
+          <ul className="hidden items-center gap-8 font-semibold lg:flex">
+            {NAV_ITEMS.map((item) => (
+              <li key={item.to} className="py-4">
+                <NavLink
+                  to={item.to}
+                  end={item.end}
+                  className={({ isActive }) =>
+                    cn("text-lg dark:text-dark-text", isActive && "text-dark-accent")
+                  }
+                >
+                  {item.label}
+                </NavLink>
               </li>
             ))}
           </ul>
-          <div className="hidden lg:flex justify-center space-x-8 items-center font-semibold">
-            {isAuthenticated ? (
-              <>
-                <a
-                  href="#"
-                  onClick={handleLogout}
-                  className="py-2 px-3 border rounded-md dark:text-dark-text transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105 duration-300"
-                >
-                  Sign Out
-                </a>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="overflow-hidden rounded-full"
-                    >
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage
-                          src={user!.avatar}
-                          referrerPolicy="no-referrer"
-                        />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel onClick={handleNavigation("/dashboard")}>
-                      Dashboard
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>Add Recipe</DropdownMenuItem>
-                    <DropdownMenuItem>Manage Recipes</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>Logout</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="py-2 px-3 border rounded-md dark:text-dark-text transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105 duration-300"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  to="/register"
-                  className="bg-gradient-to-r from-dark-accent to-dark-primary py-2 px-3 rounded-md text-white dark:text-dark-text transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105 duration-300"
-                >
-                  Create an account
-                </Link>
-              </>
-            )}
-            <Switcher />
-          </div>
-          <div
-            onClick={handleNav}
-            className="z-50 lg:hidden md:flex flex-col justify-end "
-          >
-            {mobileDrawerOpen ? (
-              <AiOutlineClose color="white" size={20} />
-            ) : (
-              <AiOutlineMenu color="white" size={20} />
-            )}
-          </div>
         </div>
+
+        <div className="hidden items-center gap-4 font-semibold lg:flex">
+          {isAuthenticated && user ? (
+            <>
+              <Button asChild size="sm" className="gap-1.5">
+                <Link to="/dashboard/add-recipe">
+                  <ListPlus className="h-4 w-4" />
+                  Recept toevoegen
+                </Link>
+              </Button>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
+                    <Avatar className="h-8 w-8">
+                      {/* avatar is null for password accounts; AvatarImage
+                          simply falls through to the initials. */}
+                      {user.avatar && <AvatarImage src={user.avatar} referrerPolicy="no-referrer" />}
+                      <AvatarFallback>{initials(user.name)}</AvatarFallback>
+                    </Avatar>
+                    <span className="sr-only">Accountmenu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-52">
+                  <DropdownMenuLabel className="font-normal">
+                    <span className="block font-medium">{user.name}</span>
+                    <span className="block text-xs text-muted-foreground">{user.email}</span>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard">
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard/user-recipes">
+                      <NotebookPen className="mr-2 h-4 w-4" />
+                      Mijn recepten
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onSelect={handleLogout} disabled={logout.isPending}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Uitloggen
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          ) : (
+            <>
+              <Button asChild variant="outline" size="sm">
+                <Link to="/login">Inloggen</Link>
+              </Button>
+              <Button asChild size="sm">
+                <Link to="/register">Account aanmaken</Link>
+              </Button>
+            </>
+          )}
+          <Switcher />
+        </div>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className="lg:hidden"
+          onClick={() => setMobileOpen((open) => !open)}
+          aria-expanded={mobileOpen}
+          aria-label={mobileOpen ? "Menu sluiten" : "Menu openen"}
+        >
+          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </Button>
       </div>
-      {mobileDrawerOpen && (
-        <div className="fixed right-0 z-20 border-b flex flex-col dark:bg-dark-background w-full p-12 justify-center items-center lg:hidden ">
-          <ul className="flex flex-col items-center gap-4 ">
-            {navItems.map((item) => (
-              <li key={item.id} className="py-4">
-                {item.text}
+
+      {mobileOpen && (
+        <div className="border-t px-4 py-6 lg:hidden dark:bg-dark-background">
+          <ul className="flex flex-col gap-1">
+            {NAV_ITEMS.map((item) => (
+              <li key={item.to}>
+                <NavLink
+                  to={item.to}
+                  end={item.end}
+                  onClick={() => setMobileOpen(false)}
+                  className="block py-2 text-lg dark:text-dark-text"
+                >
+                  {item.label}
+                </NavLink>
               </li>
             ))}
           </ul>
-          <div className="flex space-x-6">
+
+          <div className="mt-4 flex flex-col gap-2">
             {isAuthenticated ? (
-              <a
-                onClick={handleLogout}
-                className="py-2 px-3 border rounded-md dark:text-dark-text"
-              >
-                Sign Out
-              </a>
+              <>
+                <Button asChild onClick={() => setMobileOpen(false)}>
+                  <Link to="/dashboard/add-recipe">Recept toevoegen</Link>
+                </Button>
+                <Button asChild variant="outline" onClick={() => setMobileOpen(false)}>
+                  <Link to="/dashboard">Dashboard</Link>
+                </Button>
+                <Button variant="ghost" onClick={handleLogout} disabled={logout.isPending}>
+                  Uitloggen
+                </Button>
+              </>
             ) : (
               <>
-                <Link
-                  to="/login"
-                  className="py-2 px-3 border rounded-md dark:text-dark-text"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  to="/register"
-                  className="py-2 px-3 rounded-md bg-gradient-to-r from-dark-accent to-dark-secondary dark:text-dark-text"
-                >
-                  Create an account
-                </Link>
+                <Button asChild variant="outline" onClick={() => setMobileOpen(false)}>
+                  <Link to="/login">Inloggen</Link>
+                </Button>
+                <Button asChild onClick={() => setMobileOpen(false)}>
+                  <Link to="/register">Account aanmaken</Link>
+                </Button>
               </>
             )}
           </div>
@@ -182,6 +184,4 @@ const Navbar = () => {
       )}
     </nav>
   );
-};
-
-export default Navbar;
+}

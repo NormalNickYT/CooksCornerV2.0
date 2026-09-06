@@ -1,27 +1,35 @@
-import { DisplayManualRecipe } from "../../types/displayTypes";
-import CardRecipeList from "../CardRecipeList";
+import type { RecipeSummary } from "@cookscorner/shared";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { RecipeCard } from "@/features/recipes/components/RecipeCard";
+import { RecipeCardSkeleton } from "@/features/recipes/components/RecipeCardSkeleton";
 
-interface PopulaireReceptenProps {
-  recipes: DisplayManualRecipe[];
+interface RecipeSectionProps {
+  recipes: RecipeSummary[];
+  isLoading?: boolean;
 }
 
-const RecenteRecepten = ({ recipes }: PopulaireReceptenProps) => {
+export default function RecenteRecepten({ recipes, isLoading }: RecipeSectionProps) {
   return (
-    <div className="menu-tab pb-10 ">
+    <section className="pb-10">
       <div className="px-4 lg:px-20">
-        <div className="flex items-center justify-between mb-6">
-          <div className="text-3xl font-semibold text-center text-text dark:text-dark-text">
-            Recente Recepten
-          </div>
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-3xl font-semibold text-text dark:text-dark-text">Recente recepten</h2>
+          <Button asChild variant="outline">
+            <Link to="/recipes?sort=newest">Alle recepten</Link>
+          </Button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 ">
-          {recipes.map((recipe) => (
-            <CardRecipeList key={recipe.id} recipe={recipe} />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
 
-export default RecenteRecepten;
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {isLoading
+            ? Array.from({ length: 4 }, (_, index) => <RecipeCardSkeleton key={index} />)
+            : recipes.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} />)}
+        </div>
+
+        {!isLoading && recipes.length === 0 && (
+          <p className="py-10 text-center text-muted-foreground">Nog geen recepten gedeeld.</p>
+        )}
+      </div>
+    </section>
+  );
+}

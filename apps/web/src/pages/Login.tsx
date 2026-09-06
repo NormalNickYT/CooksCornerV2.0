@@ -1,10 +1,9 @@
-import LoginCard from "@/components/LoginCard";
+import LoginCard from "@/features/auth/components/LoginCard";
 
-export const Login = () => {
+export default function Login() {
   return (
-    <div className="content-center min-h-screen bg-light-background dark:bg-dark-background ">
+    <div className="flex min-h-[70vh] items-center justify-center px-4 py-16">
       <LoginCard />
     </div>
   );
-};
-export default Login;
+}
