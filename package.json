@@ -1,0 +1,37 @@
+{
+  "name": "cookscorner",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Share your favourite recipes with your family.",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22.6.0"
+  },
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,magenta \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "npm run dev --workspace @cookscorner/api",
+    "dev:web": "npm run dev --workspace @cookscorner/web",
+    "build": "npm run build --workspace @cookscorner/shared && npm run build --workspace @cookscorner/api && npm run build --workspace @cookscorner/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "db:up": "docker compose up -d && npm run db:wait",
+    "db:down": "docker compose down",
+    "db:nuke": "docker compose down -v",
+    "db:wait": "docker compose exec -T postgres sh -c 'until pg_isready -U cookscorner -d cookscorner; do sleep 1; done'",
+    "db:migrate": "npm run db:migrate --workspace @cookscorner/api",
+    "db:seed": "npm run db:seed --workspace @cookscorner/api",
+    "db:studio": "npm run db:studio --workspace @cookscorner/api",
+    "db:reset": "npm run db:reset --workspace @cookscorner/api",
+    "setup": "npm install && npm run db:up && npm run db:migrate && npm run db:seed"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.3"
+  }
+}

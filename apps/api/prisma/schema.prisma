@@ -1,81 +1,148 @@
+// CooksCorner v2 schema.
+//
+// Real foreign keys with cascading deletes: removing a recipe takes its
+// ingredients and steps with it, which the previous `relationMode = "prisma"`
+// setup could not do.
+
 datasource db {
-  provider     = "postgresql"
-  url          = env("DATABASE_URL")
-  directUrl    = env("DIRECT_URL")
-  relationMode = "prisma"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // Supabase serves pooled traffic on DATABASE_URL and migrations on this one.
+  // Locally both point at the same container.
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id       String  @id @unique @default(cuid())
-  username String
-  email    String  @unique
-  avatar   String
-  name     String
-  googleId String? @unique
-  password String?
-  posts    Post[]
+enum RecipeStatus {
+  draft
+  active
+  archived
 }
 
-model Post {
-  id              String         @id @unique @default(cuid())
-  title           String
-  userId          String
-  user            User           @relation(fields: [userId], references: [id])
-  categories      PostCategory[]
-  url             String?
-  image           String
-  createdAt       DateTime       @default(now())
-  description     String?
-  ingredients     Ingredient[]   @relation("PostIngredients")
-  tips            String?
-  status          String
-  preparationTime Int
-  cookTime        Int?
-  totalTime       Int
-  servings        Int
-  approachSteps   Step[]         @relation("PostSteps")
+model User {
+  id       String  @id @default(cuid())
+  email    String  @unique
+  username String  @unique
+  name     String
+  avatar   String?
 
-  @@index([userId])
+  // Null for Google-only accounts. Never contains a plaintext password.
+  passwordHash String?
+  googleId     String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  recipes   Recipe[]
+  favorites Favorite[]
+
+  @@index([email])
+}
+
+model Recipe {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  title       String
+  description String?
+  tips        String?
+  /// Where the recipe came from, if it was imported from a website.
+  sourceUrl   String?
+  /// Filename in the uploads directory. The API turns it into a URL.
+  image       String?
+
+  status RecipeStatus @default(draft)
+
+  /// The number of people the amounts below are written for. Every amount the
+  /// reader sees is derived from this, so it must never be zero.
+  servings Int
+
+  preparationTime Int  @default(0)
+  cookTime        Int?
+  /// Derived from preparationTime + cookTime. Stored so the list can sort and
+  /// filter on it without recomputing per row.
+  totalTime       Int  @default(0)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  ingredients Ingredient[]
+  steps       Step[]
+  categories  RecipeCategory[]
+  favorites   Favorite[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([status, createdAt])
+  @@index([totalTime])
 }
 
 model Ingredient {
-  id     String  @id @default(cuid())
-  name   String
-  amount Int
-  unit   String
-  post   Post?   @relation("PostIngredients", fields: [postId], references: [id])
-  postId String?
+  id       String @id @default(cuid())
+  recipeId String
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
-  @@index([postId])
+  name String
+
+  /// Decimal, not Int: half a teaspoon has to survive a round trip, and
+  /// scaling 3 eggs down to 2 servings produces fractions.
+  /// Null for ingredients without a quantity ("peper, naar smaak").
+  amount Decimal? @db.Decimal(12, 4)
+  unit   String?
+
+  /// False keeps the line exactly as written at any serving size.
+  scalable Boolean @default(true)
+  note     String?
+
+  /// Author's ordering. Explicit, so reordering never depends on insertion order.
+  position Int
+
+  @@index([recipeId])
 }
 
 model Step {
-  id      String  @id @default(cuid())
-  content String
-  order   Int
-  post    Post?   @relation("PostSteps", fields: [postId], references: [id])
-  postId  String?
+  id       String @id @default(cuid())
+  recipeId String
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
-  @@index([postId])
+  content  String
+  position Int
+
+  @@index([recipeId])
 }
 
 model Category {
-  id           String         @id @unique @default(cuid())
-  title        String         @unique
-  PostCategory PostCategory[]
+  id    String @id @default(cuid())
+  slug  String @unique
+  title String @unique
+
+  recipes RecipeCategory[]
 }
 
-model PostCategory {
-  postId     String
+model RecipeCategory {
+  recipeId   String
   categoryId String
-  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
-  @@id([postId, categoryId])
-  @@index([postId])
+  recipe   Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([recipeId, categoryId])
   @@index([categoryId])
+}
+
+model Favorite {
+  userId   String
+  recipeId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([userId, recipeId])
+  @@index([recipeId])
 }

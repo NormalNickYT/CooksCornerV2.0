@@ -1,0 +1,57 @@
+# Local development infrastructure.
+# Same engines as production (Supabase = PostgreSQL), so schema, migrations
+# and queries behave identically here and there.
+#
+#   npm run db:up     start everything
+#   npm run db:down   stop, keep data
+#   npm run db:nuke   stop and wipe the volumes
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: cookscorner-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cookscorner
+      POSTGRES_PASSWORD: cookscorner
+      POSTGRES_DB: cookscorner
+    ports:
+      # 5433 on the host so it never collides with a locally installed Postgres
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cookscorner -d cookscorner"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: cookscorner-redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Browse the database at http://localhost:8080
+  # System: PostgreSQL / Server: postgres / User+Password+Database: cookscorner
+  adminer:
+    image: adminer:latest
+    container_name: cookscorner-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+  redis-data:
